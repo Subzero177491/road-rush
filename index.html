@@ -23,7 +23,7 @@ html,body{height:100%;margin:0;background:var(--bg);overflow:hidden;font-family:
 canvas{width:100%;height:100%;display:block;image-rendering:pixelated;image-rendering:crisp-edges}
 #hud{position:absolute;top:10px;left:12px;right:12px;display:flex;justify-content:space-between;gap:6px;font-size:10px;text-shadow:2px 2px 0 #1b2a3a;pointer-events:none}
 #ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;padding:24px}
-#ov .box{margin:auto;background:var(--panel);border:4px solid var(--ink);padding:24px 20px;max-width:340px;box-shadow:6px 6px 0 #1b2a3a}
+#ov .box{margin:auto auto 10px;animation:rise .25s ease-out;background:var(--panel);border:4px solid var(--ink);padding:24px 20px;max-width:340px;box-shadow:6px 6px 0 #1b2a3a}
 h1{font-size:24px;letter-spacing:1px;line-height:1.4;margin:0 0 14px;color:#ffd95a;text-shadow:3px 3px 0 var(--accent)}
 p{font-size:10px;line-height:1.9;margin:0 0 16px}
 button{font:inherit;font-size:12px;color:var(--ink);background:var(--accent);border:4px solid var(--ink);padding:12px 18px;cursor:pointer;box-shadow:4px 4px 0 #1b2a3a}
@@ -40,6 +40,24 @@ button:focus-visible{outline:4px solid #ffd95a;outline-offset:3px}
 .big button{font-size:15px!important;padding:16px 22px!important}.big p,.big .row{font-size:12px}
 .hc{--panel:#000}.hc #hud,.hc #pw,.hc #pop{text-shadow:2px 2px 0 #000,-2px -2px 0 #000,2px -2px 0 #000,-2px 2px 0 #000}.hc canvas{filter:contrast(1.25) saturate(1.1)}
 #pn{font:inherit;font-size:10px;padding:8px;border:3px solid var(--ink);background:#0f1722;color:var(--ink);width:150px;min-width:0}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+@media (prefers-reduced-motion:reduce){#ov .box{animation:none}}
+body.th1{--accent:#7a4fc7;--panel:rgba(14,12,34,.9)}body.th2{--accent:#2fb37a;--ink:#c8ffc8;--panel:rgba(8,24,10,.9)}
+#go.play{font-size:20px!important;padding:16px 40px!important;margin:6px 0 2px;background:#2fb37a}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px 8px;margin-top:16px}
+.grid button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 2px!important;border-width:3px!important;font-size:7px!important;min-width:0}
+.grid button b{font-size:18px;font-weight:normal;line-height:1}
+#bankp{margin:0 0 10px!important;padding:8px 10px;border:2px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06)}
+.pu{--c:#fff;--p:100%;position:relative;width:34px;height:34px;border-radius:50%;background:conic-gradient(var(--c) var(--p),rgba(0,0,0,.5) 0);display:grid;place-items:center}
+.pu::before{content:"";position:absolute;inset:4px;border-radius:50%;background:#1b2a3a}
+.pu i{position:relative}
+.pu b{position:absolute;right:-6px;bottom:-5px;font-size:8px;font-weight:normal;background:#1b2a3a;padding:1px 3px;border:1px solid var(--ink)}
+.pu b:empty{display:none}
+.tg{width:48px;height:26px;padding:0!important;position:relative;background:#3a3f4a!important;border-width:3px!important;box-shadow:none!important;min-width:48px!important}
+.big .tg{padding:0!important}
+.tg i{position:absolute;top:2px;left:2px;width:14px;height:14px;background:var(--ink);transition:left .15s}
+.tg.on{background:#2fb37a!important}.tg.on i{left:24px}
+.row.card{background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.2);padding:8px}.row.card.cur{border-color:#ffd95a}
 .fl{position:absolute;left:50%;top:58%;transform:translateX(-50%);font-size:14px;color:#ffd23a;text-shadow:2px 2px 0 #1b2a3a;pointer-events:none;animation:fl .8s ease-out forwards}
 @keyframes fl{to{transform:translate(-50%,-60px);opacity:0}}@keyframes bump{50%{transform:scale(1.25)}}.bump{animation:bump .25s}
 .bar{display:block;height:8px;border:2px solid var(--ink);margin:6px auto 0;width:140px;box-sizing:content-box}.bar b{display:block;height:100%;background:#ffd95a}
@@ -76,18 +94,18 @@ button:disabled{opacity:.6;cursor:default}#ov{overflow:auto}
   <div id="hud"><span class="cb"><i class="ic ic-dist"></i><b id="score">0 m</b></span><span class="cb"><i class="coin"></i><b id="coins">0</b></span><span class="cb"><i class="ic ic-best"></i><b id="best">0</b></span><button id="mute" aria-label="Toggle sound">♪</button><button id="pause" aria-label="Pause" style="visibility:hidden"><svg width="12" height="12" viewBox="0 0 12 12" style="display:block"><rect x="1" width="4" height="12" fill="currentColor"/><rect x="7" width="4" height="12" fill="currentColor"/></svg></button></div>
   <div id="ov"><div class="box">
     <h1 id="title" class="logo">ROAD<br>RUSH</h1><i class="pcar" id="pcar"></i>
+    <p id="bankp"></p>
     <p id="msg">Dodge the traffic. Tap the left or right side of the screen, or use ← → keys, to change lanes.</p>
-    <button id="go">Start driving</button>
+    <button id="go" class="play">PLAY</button>
     <div id="rstw" style="margin-top:14px;display:none"><button id="rst">Restart</button></div>
-    <div id="gbw" style="margin-top:14px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap"><button id="gbtn">Garage</button> <button id="setbtn">Settings</button></div>
-    <div id="misw" style="margin-top:14px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap"><button id="misbtn">Missions</button><button id="lbbtn">Top 10</button></div>
-    <div id="howw" style="margin-top:14px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap"><button id="howbtn">How to play</button><button id="stbtn">Stats</button></div>
-    <div id="spw" style="margin-top:14px"><button id="spbtn">Daily spin</button></div>
     <div id="rvw" style="margin-top:14px;display:none"><button id="rev">Revive</button></div>
     <div id="shw" style="margin-top:14px;display:none"><button id="share">Share score</button></div>
+    <div class="grid" id="menug">
+      <button id="gbtn"><b>🚗</b>Garage</button><button id="misbtn"><b>🎯</b>Missions</button><button id="lbbtn"><b>🏆</b>Top 10</button><button id="stbtn"><b>📊</b>Stats</button>
+      <button id="spbtn"><b>🎡</b>Spin</button><button id="howbtn"><b>❓</b>Help</button><button id="setbtn"><b>⚙️</b>Settings</button>
+    </div>
     <div id="menuw" style="margin-top:14px;display:none"><button id="menu">Main menu</button></div>
-    <p id="bankp" style="margin:14px 0 0"></p>
-    <p id="ver" style="font-size:8px;opacity:.7;margin:14px 0 0">v2.1.1</p>
+    <p id="ver" style="font-size:8px;opacity:.7;margin:14px 0 0">v2.2.1</p>
   </div><div class="box" id="gar" style="display:none"></div><div class="box" id="set" style="display:none"></div><div class="box" id="mis" style="display:none"></div><div class="box" id="how" style="display:none"></div><div class="box" id="stp" style="display:none"></div><div class="box" id="spn" style="display:none"></div><div class="box" id="lb" style="display:none"></div></div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -243,7 +261,7 @@ function glow(x,y,z,w,h,c){var m=box(player,w,h,0.05,x,y,z,c);m.material=new THR
 });
 var flames=[-0.5,0.5].map(function(x){var f=box(player,0.35,0.3,1,x,0.6,2.3,0xff8a1f);f.material=new THREE.MeshBasicMaterial({color:0xff8a1f});f.visible=false;return f;});
 
-var traffic=[],coinsArr=[],pickups=[],coinAcc=0,nitroT=0,magT=0,shield=0,coinCount=0,muted=!!save.mute,crashFly=0,slipT=0,oils=[],debris=[],nextBoss=500,runNM=0,rainK=0,jumpT=0,ramps=[],comboN=0,comboT=0,lastM=0,fpsAcc=0,fpsN=0,spdOn=false,lastZone=0,revCount=0,rockT=0,lastEv=0,runT=0,wd=0,rec=[],lastRec=0,gh=null,pwHtml='',neonOn=false,graceT=0,lbMode=0,lastFree=1,bossPending=false,bossJust=false,ren=false,ww=0,holdT=0,nwMsg=false,dailyMsg='';
+var traffic=[],coinsArr=[],pickups=[],coinAcc=0,nitroT=0,magT=0,shield=0,coinCount=0,muted=!!save.mute,crashFly=0,slipT=0,oils=[],debris=[],nextBoss=500,runNM=0,rainK=0,jumpT=0,ramps=[],comboN=0,comboT=0,lastM=0,fpsAcc=0,fpsN=0,spdOn=false,lastZone=0,revCount=0,rockT=0,lastEv=0,runT=0,wd=0,rec=[],lastRec=0,gh=null,pwHtml='',neonOn=false,graceT=0,lastXp=0,lbMode=0,lastFree=1,bossPending=false,bossJust=false,ren=false,ww=0,holdT=0,nwMsg=false,dailyMsg='';
 var BIOMES=[[0x7fd1e8,0xe8c27a,0.65],[0xf08a5d,0xd9a066,0.55],[0x1b2440,0x3b4a5a,0.3],[0xbfd8e8,0xf2f6fa,0.75],[0x56636f,0x8c9170,0.42],[0xa9c4d8,0x6b7078,0.62],[0x8fd1a0,0x4f8f4a,0.62],[0x8fe0f0,0xf0dca0,0.7],[0x1a0f33,0x2a2440,0.28]];
 var curSky=new THREE.Color(SKY),curGround=new THREE.Color(0xe8c27a),curAmb=0.65,bt=new THREE.Color(),ambient=scene.children[0];
 var AC=null,eng=null,engG=null;
@@ -278,13 +296,13 @@ function crash(){
   state='over';shake=1;$('pause').style.visibility='hidden';tone(140,0.6,'sawtooth',0.3,25);boom();persist();vib([80,40,120]);comboN=0;
   var f=$('flash');f.style.transition='none';f.style.opacity=save.calm?'.12':'.6';
   requestAnimationFrame(function(){f.style.transition='opacity .35s';f.style.opacity='0';});
-  var m=Math.floor(dist);lastM=m;sti('c');addXp(Math.floor(m/8)+runNM*4);postScore(m);postWeekly(m);updateBank();chk();$('pw').textContent='';pwHtml='';
+  var m=Math.floor(dist);lastM=m;sti('c');lastXp=Math.floor(m/8)+runNM*4;addXp(lastXp);postScore(m);postWeekly(m);updateBank();chk();$('pw').textContent='';pwHtml='';
   var isBest=m>best;
   if(isBest){best=m;try{localStorage.setItem('pixhwy-best',best);}catch(e){}}
   $('best').textContent=best;updateBank();
   $('title').textContent='Crashed!';
-  $('msg').textContent='You drove '+m+' m'+(isBest?' — a new best.':'.')+(lvMsg?' '+lvMsg:'');
-  $('go').textContent='Drive again';
+  $('msg').innerHTML='<span class="cb"><i class="ic ic-dist"></i><b>'+m+' m</b></span> <span class="cb"><i class="coin"></i><b>'+coinCount+'</b></span><br><small>+'+lastXp+' XP'+(isBest?' · New best!':'')+(lvMsg?'<br>'+lvMsg:'')+'</small>';
+  $('go').textContent='RETRY';
   setTimeout(function(){if(state==='over')showOv('over');},700);
 }
 function screenSign(){
@@ -313,11 +331,13 @@ $('stage').addEventListener('pointermove',function(e){if(sx===null||!save.ctl)re
 addEventListener('pointerup',function(){sx=null;});
 $('go').addEventListener('click',function(){if(state==='paused')resume();else start();});
 function showOv(mode){
-  if(mode==='menu'){$('title').innerHTML='ROAD<br>RUSH';$('msg').textContent='Dodge the traffic. Tap the left or right side of the screen, or use ← → keys, to change lanes.';$('go').textContent='Start driving';}
+  if(mode==='menu'){$('title').innerHTML='ROAD<br>RUSH';$('msg').textContent='Dodge the traffic. Tap the left or right side of the screen, or use ← → keys, to change lanes.';$('go').textContent='PLAY';}
   if(mode==='pause'){$('title').textContent='Paused';$('msg').textContent='Your run is on hold.';$('go').textContent='Resume';}
   var p=mode==='pause';$('title').className=mode==='menu'?'logo':'';$('pcar').style.display=mode==='menu'?'block':'none';
   $('rstw').style.display=p?'block':'none';$('menuw').style.display=mode==='menu'?'none':'block';
-  $('gbw').style.display='flex';$('gbtn').style.display=p?'none':'inline-block';$('misw').style.display=p?'none':'flex';$('howw').style.display=p?'none':'flex';$('spw').style.display=p?'none':'block';$('shw').style.display=mode==='over'?'block':'none';$('rvw').style.display=mode==='over'&&revCount<3?'block':'none';$('rev').innerHTML='Revive <i class="coin"></i> '+rcost();$('bankp').style.display=p?'none':'block';
+  ['gbtn','lbbtn','howbtn'].forEach(function(id){$(id).style.display='flex';});
+  ['misbtn','stbtn','spbtn'].forEach(function(id){$(id).style.display=p?'none':'flex';});
+  $('shw').style.display=mode==='over'?'block':'none';$('rvw').style.display=mode==='over'&&revCount<3?'block':'none';$('rev').innerHTML='Revive <i class="coin"></i> '+rcost();$('bankp').style.display=p?'none':'block';
   $('pause').style.visibility='hidden';showGarage(false);showSet(false);showMis(false);showHow(false);showStats(false);showSpin(false);showLb(false);$('ov').style.display='flex';
 }
 function pause(){if(state!=='play')return;state='paused';persist();showOv('pause');}
@@ -327,7 +347,7 @@ $('pause').addEventListener('click',function(){this.blur();pause();});
 $('rst').addEventListener('click',start);
 $('menu').addEventListener('click',toMenu);
 document.addEventListener('visibilitychange',function(){if(document.hidden)pause();else if(state==='play')wake();});
-function updateBank(){$('bankp').innerHTML='<span class="cb"><i class="coin"></i><b>'+save.bank+'</b></span> <span class="cb"><i class="ic ic-best"></i><b>'+best+'</b></span>'+'<br><small>Lv '+lvl().l+' '+['Rookie','Cruiser','Driver','Racer','Veteran','Road King'][Math.min(5,Math.floor((lvl().l-1)/3))]+'</small><i class="bar"><b style="width:'+Math.floor(100*lvl().xp/lvl().need)+'%"></b></i>'+(dailyMsg?'<br><small>'+dailyMsg+'</small>':'');}
+function updateBank(){$('bankp').innerHTML=(save.pname?'<small>'+esc(save.pname)+'</small><br>':'')+'<span class="cb"><i class="coin"></i><b>'+save.bank+'</b></span> <span class="cb"><i class="ic ic-best"></i><b>'+best+'</b></span>'+'<br><small>Lv '+lvl().l+' '+['Rookie','Cruiser','Driver','Racer','Veteran','Road King'][Math.min(5,Math.floor((lvl().l-1)/3))]+'</small><i class="bar"><b style="width:'+Math.floor(100*lvl().xp/lvl().need)+'%"></b></i>'+(dailyMsg?'<br><small>'+dailyMsg+'</small>':'');}
 var popT=0;
 function dealIdx(){var d=new Date();return (d.getFullYear()*372+d.getMonth()*31+d.getDate())%(CARS.length-1)+1;}
 function price(i){return i===dealIdx()?Math.floor(CARS[i][2]*0.6):CARS[i][2];}
@@ -367,7 +387,7 @@ delete save.ghost;delete save.gbest;
 var WK=[['Drive 3,000 m in one run',function(){return dist>=3000;}],['25 close calls in one run',function(){return runNM>=25;}],['Collect 150 coins in one run',function(){return coinCount>=150;}]];
 function wk(){var id=Math.floor(Date.now()/6048e5);if(!save.wk||save.wk.id!==id)save.wk={id:id,d:0};return WK[id%3];}
 function sti(k,n){save.st=save.st||{};save.st[k]=(save.st[k]||0)+(n||1);}
-function a11y(){document.body.classList.toggle('big',!!save.big);document.body.classList.toggle('hc',!!save.hc);persist();}
+function a11y(){document.body.classList.toggle('big',!!save.big);document.body.classList.toggle('hc',!!save.hc);['th1','th2'].forEach(function(c,i){document.body.classList.toggle(c,(save.theme||0)===i+1);});persist();}
 a11y();
 function showStats(on){
   $('stp').style.display=on?'block':'none';document.querySelector('#ov .box').style.display=on?'none':'block';
@@ -480,13 +500,13 @@ function showMis(on){
   h+='<p>Badges</p>';ACH.forEach(function(a,i){h+='<div class="row"><span>'+a[0]+'<br><small>'+a[1]+'</small></span><span>'+(save.ach&&save.ach[i]?'✓':'')+'</span></div>';});
   $('mis').innerHTML=h+'<button id="mback">Back</button>';
 }
-var SETI=[['snd','Sound','Turns sound effects like coin pings and crashes on or off.'],['gfx','Graphics','Lower sharpness runs smoother on slow phones. Higher looks crisper.'],['ctl','Steering','Tap the left or right side of the screen, or swipe to change lanes.'],['cam','Camera','Choose the view behind the car, a high view, or a hood view.'],['big','Big buttons','Makes buttons and text larger and easier to tap.'],['hc','High contrast','Boosts contrast so the game is easier to see.'],['calm','Calm mode','Reduces screen shake, flashes and speed lines.'],['vib','Vibration','Buzzes your phone on crashes, coins and close calls.'],['aq','Auto quality','Lowers sharpness by itself if the game starts to lag.']];
-function setVal(k){var G=['Low','Medium','High'];return k==='snd'?(muted?'Off':'On'):k==='gfx'?G[save.gfx==null?2:save.gfx]:k==='ctl'?['Tap','Swipe'][save.ctl||0]:k==='cam'?['Behind','High','Hood'][save.cam||0]:k==='big'?(save.big?'On':'Off'):k==='hc'?(save.hc?'On':'Off'):k==='calm'?(save.calm?'On':'Off'):k==='vib'?(save.novib?'Off':'On'):(save.noaq?'Off':'On');}
+var SETI=[['snd','Sound','Turns sound effects like coin pings and crashes on or off.'],['gfx','Graphics','Lower sharpness runs smoother on slow phones. Higher looks crisper.'],['ctl','Steering','Tap the left or right side of the screen, or swipe to change lanes.'],['cam','Camera','Choose the view behind the car, a high view, or a hood view.'],['big','Big buttons','Makes buttons and text larger and easier to tap.'],['hc','High contrast','Boosts contrast so the game is easier to see.'],['calm','Calm mode','Reduces screen shake, flashes and speed lines.'],['vib','Vibration','Buzzes your phone on crashes, coins and close calls.'],['aq','Auto quality','Lowers sharpness by itself if the game starts to lag.'],['theme','Theme','Pick a color theme. Night unlocks at level 3 and Retro at level 6.']];
+function setVal(k){var G=['Low','Medium','High'];return k==='snd'?(muted?'Off':'On'):k==='gfx'?G[save.gfx==null?2:save.gfx]:k==='ctl'?['Tap','Swipe'][save.ctl||0]:k==='cam'?['Behind','High','Hood'][save.cam||0]:k==='big'?(save.big?'On':'Off'):k==='hc'?(save.hc?'On':'Off'):k==='calm'?(save.calm?'On':'Off'):k==='vib'?(save.novib?'Off':'On'):k==='theme'?['Classic','Night','Retro'][save.theme||0]:(save.noaq?'Off':'On');}
 function showSet(on){
   $('set').style.display=on?'block':'none';document.querySelector('#ov .box').style.display=on?'none':'block';
   if(!on)return;
   var h='<h1>Settings</h1>';
-  SETI.forEach(function(r){h+='<div class="row"><span><button class="q" data-q="'+r[0]+'" aria-label="What is '+r[1]+'?">?</button> '+r[1]+'</span><button data-k="'+r[0]+'">'+setVal(r[0])+'</button></div><p class="tip" id="tip-'+r[0]+'" style="display:none">'+r[2]+'</p>';});
+  SETI.forEach(function(r){h+='<div class="row"><span><button class="q" data-q="'+r[0]+'" aria-label="What is '+r[1]+'?">?</button> '+r[1]+'</span>'+(['On','Off'].indexOf(setVal(r[0]))>=0?'<button class="tg'+(setVal(r[0])==='On'?' on':'')+'" data-k="'+r[0]+'" role="switch" aria-checked="'+(setVal(r[0])==='On')+'"><i></i></button>':'<button data-k="'+r[0]+'">'+setVal(r[0])+'</button>')+'</div><p class="tip" id="tip-'+r[0]+'" style="display:none">'+r[2]+'</p>';});
   h+='<div class="row"><span>Reset progress</span><button id="rstall">Reset</button></div>';
   $('set').innerHTML=h+'<button id="sback">Back</button>';
 }
@@ -506,6 +526,7 @@ $('set').addEventListener('click',function(e){
   else if(k==='big'){save.big=!save.big;a11y();}
   else if(k==='hc'){save.hc=!save.hc;a11y();}
   else if(k==='calm')save.calm=!save.calm;
+  else if(k==='theme'){var nx=((save.theme||0)+1)%3;while(nx>0&&lvl().l<[0,3,6][nx])nx=(nx+1)%3;save.theme=nx;a11y();}
   else if(k==='vib')save.novib=!save.novib;
   else if(k==='aq')save.noaq=!save.noaq;
   persist();showSet(true);
@@ -518,10 +539,12 @@ function nearMiss(){
 function showGarage(on){
   $('gar').style.display=on?'block':'none';document.querySelector('#ov .box').style.display=on?'none':'block';
   if(!on)return;
-  var h='<h1>Garage</h1><p><span class="cb"><i class="coin"></i><b>'+save.bank+'</b></span></p><p>★ = 40% off today</p>';
+  var h='<h1>Garage</h1><p><span class="cb"><i class="coin"></i><b>'+save.bank+'</b></span></p><p>★ = 40% off today · H handling, C coins, D defense</p>';
   CARS.forEach(function(c,i){
-    var own=save.own.indexOf(i)>=0,lab=own?(save.sel===i?'Driving':'Select'):('<i class="coin"></i> '+price(i)+(i===dealIdx()?' ★':''));
-    h+='<div class="row"><span><i class="sw" style="background:#'+('000000'+c[1].toString(16)).slice(-6)+'"></i>'+c[0]+'<br><small>'+c[3]+'</small></span><button data-i="'+i+'"'+(save.sel===i?' disabled':'')+'>'+lab+'</button></div>';
+    var own=save.own.indexOf(i)>=0,lab=own?(save.sel===i?'Driving':'Select'):('🔒 <i class="coin"></i> '+price(i)+(i===dealIdx()?' ★':''));
+    var sb=c[4],bv=[Math.min(1,((sb.agi||11)-9)/14),Math.min(1,((sb.coin||1)-0.5)/1.5),Math.min(1,(sb.shield?0.6:0.2)+((sb.nar||0)>0?0.3:0))],bars='';
+    ['H','C','D'].forEach(function(L,j){bars+='<small>'+L+'</small><i class="bar" style="width:34px;margin:0 6px 0 2px;display:inline-block;vertical-align:middle"><b style="width:'+Math.round(bv[j]*100)+'%"></b></i>';});
+    h+='<div class="row card'+(save.sel===i?' cur':'')+'"><span><i class="sw" style="background:#'+('000000'+c[1].toString(16)).slice(-6)+'"></i>'+c[0]+'<br><small>'+c[3]+'</small><br>'+bars+'</span><button data-i="'+i+'"'+(save.sel===i?' disabled':'')+'>'+lab+'</button></div>';
   });
   h+='<p>Customize</p><div class="row" style="flex-wrap:wrap;justify-content:center">';
   [['w','Wheels'],['s','Stripe'],['sp','Spoiler'],['n','Neon']].forEach(function(u){var v=save.cu&&save.cu[u[0]];h+='<button data-u="'+u[0]+'">'+u[1]+' '+(v===undefined?'<i class="coin"></i> 30':v?'On':'Off')+'</button>';});
@@ -611,8 +634,8 @@ function frame(t){
     var fl=[0,1,2,3].slice(0,SL).filter(function(i){return !occ[i];});
     if(fl.length>1){var rk=makeRock();rk.userData={hw:1.5,hl:1.7,sp:9,minD:99,done:false,fall:true};rk.position.set(LANES[fl[Math.floor(Math.random()*fl.length)]],14,-60);scene.add(rk);traffic.push(rk);}}
     if(jumpT>0){jumpT-=dt;if(jumpT<=0){jumpT=0;bonus(5);popup('Air time! +5');}}madd(1,v*dt*0.25);save.tot=(save.tot||0)+v*dt*0.25;
-    var pw=[];if(nitroT>0)pw.push(['ic-nitro','Nitro '+Math.ceil(nitroT)+'s']);if(shield>0)pw.push(['ic-shield','Shield'+(shield>1?' x'+shield:'')]);if(magT>0)pw.push(['ic-magnet','Magnet '+Math.ceil(magT)+'s']);if(mult()>1)pw.push(['ic-combo','x'+mult()]);
-    var ph=pw.map(function(a){return '<span class="cb"><i class="ic '+a[0]+'"></i><b>'+a[1]+'</b></span>';}).join('');
+    var pw=[];if(nitroT>0)pw.push(['#ff8a1f',nitroT/10,'']);if(shield>0)pw.push(['#66e0ff',1,shield>1?'x'+shield:'']);if(magT>0)pw.push(['#e05cff',magT/20,'']);if(mult()>1)pw.push(['#ffd95a',comboT/6,'x'+mult()]);
+    var ph=pw.map(function(a){return '<span class="pu" style="--c:'+a[0]+';--p:'+(Math.round(Math.max(0,Math.min(1,a[1]))*20)*5)+'%"><i class="ic" style="background:'+a[0]+'"></i><b>'+a[2]+'</b></span>';}).join('');
     if(ph!==pwHtml){pwHtml=ph;$('pw').innerHTML=ph;}
   }
 
@@ -699,7 +722,7 @@ function frame(t){
   shake=Math.max(0,shake-dt*2.5);
   var cp=CAMP[save.cam||0],sk=save.calm?shake*0.15:shake;camera.position.set(px*cp.fx+(Math.random()-0.5)*sk*0.6,cp.y+(Math.random()-0.5)*sk*0.4,cp.z);
   if(state==='ready')camera.position.x+=Math.sin(t/2500)*2.2;
-  camera.lookAt(px*0.4,cp.ly,cp.lz);
+  camera.lookAt(px*0.4,cp.ly-(state==='ready'?2.6:0),cp.lz);
 
   var b=BIOMES[Math.floor(dist/150)%9],dm=dist%1000,zone=dm>700&&dm<850?1:dm>350&&dm<500?2:0;
   if(zone!==lastZone){lastZone=zone;if(zone===1)popup('Tunnel!');else if(zone===2)popup('Bridge!');}
