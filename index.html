@@ -106,11 +106,11 @@ button:disabled{opacity:.6;cursor:default}#ov{overflow:auto}
     <div id="shw" style="margin-top:14px;display:none"><button id="share">Share score</button></div>
     <div class="grid" id="menug">
       <button id="gbtn"><b>🚗</b>Garage</button><button id="misbtn"><b>🎯</b>Missions</button><button id="lbbtn"><b>🏆</b>Top 10</button><button id="stbtn"><b>📊</b>Stats</button>
-      <button id="spbtn"><b>🎡</b>Spin</button><button id="howbtn"><b>❓</b>Help</button><button id="prbtn"><b>🛣️</b>Practice</button><button id="ibtn"><b>🎁</b>Invite</button><button id="rcbtn"><b>🏁</b>Race</button><button id="setbtn"><b>⚙️</b>Settings</button>
+      <button id="spbtn"><b>🎡</b>Spin</button><button id="howbtn"><b>❓</b>Help</button><button id="prbtn"><b>🛣️</b>Practice</button><button id="rcbtn"><b>🏁</b>Race</button><button id="setbtn"><b>⚙️</b>Settings</button>
     </div>
     <div id="menuw" style="margin-top:14px;display:none"><button id="menu">Main menu</button></div>
-    <p id="ver" style="font-size:8px;opacity:.7;margin:14px 0 0">v3.1.0</p>
-  </div><div class="box" id="gar" style="display:none"></div><div class="box" id="set" style="display:none"></div><div class="box" id="mis" style="display:none"></div><div class="box" id="how" style="display:none"></div><div class="box" id="stp" style="display:none"></div><div class="box" id="spn" style="display:none"></div><div class="box" id="lb" style="display:none"></div><div class="box" id="rcp" style="display:none"></div><div class="box" id="inv" style="display:none"></div></div>
+    <p id="ver" style="font-size:8px;opacity:.7;margin:14px 0 0">v3.1.1</p>
+  </div><div class="box" id="gar" style="display:none"></div><div class="box" id="set" style="display:none"></div><div class="box" id="mis" style="display:none"></div><div class="box" id="how" style="display:none"></div><div class="box" id="stp" style="display:none"></div><div class="box" id="spn" style="display:none"></div><div class="box" id="lb" style="display:none"></div><div class="box" id="rcp" style="display:none"></div></div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -343,9 +343,9 @@ function showOv(mode){
   var p=mode==='pause';$('title').className=mode==='menu'?'logo':'';$('pcar').style.display=mode==='menu'?'block':'none';
   $('rstw').style.display=p?'block':'none';$('menuw').style.display=mode==='menu'?'none':'block';
   ['gbtn','lbbtn','howbtn'].forEach(function(id){$(id).style.display='flex';});
-  ['misbtn','stbtn','spbtn','rcbtn','prbtn','ibtn'].forEach(function(id){$(id).style.display=p?'none':'flex';});
+  ['misbtn','stbtn','spbtn','rcbtn','prbtn'].forEach(function(id){$(id).style.display=p?'none':'flex';});
   $('shw').style.display=mode==='over'?'block':'none';$('rvw').style.display=mode==='over'&&revCount<3?'block':'none';$('rev').innerHTML='Revive <i class="coin"></i> '+rcost();$('bankp').style.display=p?'none':'block';
-  $('pause').style.visibility='hidden';showGarage(false);showSet(false);showMis(false);showHow(false);showStats(false);showSpin(false);showLb(false);showRace(false);showInv(false);$('ov').style.display='flex';
+  $('pause').style.visibility='hidden';showGarage(false);showSet(false);showMis(false);showHow(false);showStats(false);showSpin(false);showLb(false);showRace(false);$('ov').style.display='flex';
 }
 function pause(){if(state!=='play'||race.on)return;state='paused';persist();showOv('pause');}
 function resume(){if(state!=='paused'||resuming)return;resuming=true;wake();$('ov').style.display='none';$('pause').style.visibility='visible';var n=3;$('cd').style.display='flex';$('cd').textContent=n;var iv=setInterval(function(){n--;if(n>0){$('cd').textContent=n;return;}clearInterval(iv);$('cd').style.display='none';resuming=false;state='play';},1000);}
@@ -583,33 +583,9 @@ $('rcp').addEventListener('click',function(e){
   }
   if(id==='rcstart'){b.disabled=true;api(race.code+'/st','PUT','go').then(function(){race.starting=true;rcClean();countdown();}).catch(function(){b.disabled=false;});}
 });
-function mycode(){return pid0().slice(-6).toUpperCase();}
-function refCheck(){apiR('refs/'+mycode()+'/r').then(function(r){var k=Math.min(10,Object.keys(r||{}).length),p=save.refPaid||0;if(k>p){save.bank+=100*(k-p);save.refPaid=k;persist();updateBank();}}).catch(function(){});}
-function showInv(on){
-  var b=$('inv');b.style.display=on?'block':'none';document.querySelector('#ov .box').style.display=on?'none':'block';
-  if(!on)return;
-  apiR('refs/'+mycode()+'/o','PUT',{n:save.pname||'Player'}).catch(function(){});refCheck();
-  b.innerHTML='<h1>Invite</h1><p>Share your code. When a friend enters it you both get 100 coins (up to 10 friends).</p><p style="font-size:22px;margin:0 0 12px">'+mycode()+'</p><p>Friends who joined: '+(save.refPaid||0)+'</p><p>Have a friend code?</p><div class="row" style="justify-content:center"><input id="rcin2" maxlength="6" placeholder="CODE"><button id="rdeem">Redeem</button></div><p id="rmsg"></p><button id="iback">Back</button>';
-}
-$('ibtn').addEventListener('click',function(){showInv(true);});
-$('inv').addEventListener('click',function(e){
-  var b=e.target.closest('button');if(!b)return;var msg=function(t){var m=$('rmsg');if(m)m.textContent=t;};
-  if(b.id==='iback'){showInv(false);return;}
-  if(b.id==='rdeem'){
-    var c=($('rcin2').value||'').toUpperCase().trim();
-    if(save.refUsed){msg('You already used a friend code.');return;}
-    if(c.length!==6){msg('Enter the 6-letter code.');return;}
-    if(c===mycode()){msg('That is your own code.');return;}
-    apiR('refs/'+c+'/o').then(function(o){
-      if(!o){msg('Code not found.');return;}
-      return apiR('refs/'+c+'/r/'+pid0(),'PUT',{t:Date.now()}).then(function(){save.refUsed=1;save.bank+=100;persist();updateBank();msg('+100 coins! Thanks for joining.');});
-    }).catch(function(){msg('Could not redeem.');});
-  }
-});
 $('prbtn').addEventListener('click',function(){practice=true;start();popup('Practice track');});
 $('fs').addEventListener('click',function(){this.blur();try{if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen();}catch(e){}});
 if(!document.documentElement.requestFullscreen)$('fs').style.display='none';
-setTimeout(refCheck,2500);
 var PAINT=[0xd9342b,0x2f6fdb,0x2fb37a,0xf2b632,0x7a4fc7,0x15171c,0xffffff];
 function mult(){return 1+Math.min(4,Math.floor(comboN/2));}
 function vib(n){try{if(!save.novib&&navigator.vibrate)navigator.vibrate(n);}catch(e){}}
