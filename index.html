@@ -87,7 +87,7 @@ button:disabled{opacity:.6;cursor:default}#ov{overflow:auto}
     <div id="shw" style="margin-top:14px;display:none"><button id="share">Share score</button></div>
     <div id="menuw" style="margin-top:14px;display:none"><button id="menu">Main menu</button></div>
     <p id="bankp" style="margin:14px 0 0"></p>
-    <p id="ver" style="font-size:8px;opacity:.7;margin:14px 0 0">v2.1.0</p>
+    <p id="ver" style="font-size:8px;opacity:.7;margin:14px 0 0">v2.1.1</p>
   </div><div class="box" id="gar" style="display:none"></div><div class="box" id="set" style="display:none"></div><div class="box" id="mis" style="display:none"></div><div class="box" id="how" style="display:none"></div><div class="box" id="stp" style="display:none"></div><div class="box" id="spn" style="display:none"></div><div class="box" id="lb" style="display:none"></div></div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -168,10 +168,7 @@ var trees=[],palms=[];
 for(var ti2=0;ti2<20;ti2++){var tg2=new THREE.Group();box(tg2,0.5,1.8,0.5,0,0.9,0,0x6b4a2b);box(tg2,2.4,1.1,2.4,0,2.3,0,0x2f7a3a);box(tg2,1.7,1.1,1.7,0,3.2,0,0x3a8f46);box(tg2,0.9,1,0.9,0,4.1,0,0x4aa356);tg2.position.set((ti2%2?1:-1)*(7.5+Math.random()*12),0,-(ti2/20)*LOOP);tg2.visible=false;scene.add(tg2);trees.push(tg2);}
 for(var pi2=0;pi2<10;pi2++){var pm=new THREE.Group();box(pm,0.4,3.2,0.4,0,1.6,0,0x9a7a4a);box(pm,3,0.2,0.8,0,3.3,0,0x3fae4a);box(pm,0.8,0.2,3,0,3.35,0,0x3fae4a);pm.position.set(7.5+Math.random()*10,0,-(pi2/10)*LOOP);pm.visible=false;scene.add(pm);palms.push(pm);}
 var sea=box(scene,100,0.1,320,-62,0.03,-110,0x2f8fd8);sea.visible=false;
-var sc=document.createElement('canvas');sc.width=128;sc.height=64;var sctx=sc.getContext('2d'),stex=new THREE.CanvasTexture(sc),signT=0,signs=[];
-stex.magFilter=stex.minFilter=THREE.NearestFilter;
-function drawSign(){sctx.fillStyle='#1b2a3a';sctx.fillRect(0,0,128,64);sctx.strokeStyle='#ffd95a';sctx.lineWidth=4;sctx.strokeRect(2,2,124,60);sctx.textAlign='center';sctx.fillStyle='#ffd95a';sctx.font='10px monospace';sctx.fillText('ROAD RUSH',64,18);sctx.fillStyle='#ffffff';sctx.font='bold 18px monospace';sctx.fillText(Math.floor(dist||0)+' m',64,40);sctx.fillStyle='#8fd1ff';sctx.font='9px monospace';sctx.fillText('BEST '+(best||0)+' m',64,55);stex.needsUpdate=true;}
-for(var si=0;si<3;si++){var sg=new THREE.Group();box(sg,0.25,4.5,0.25,-1.4,2.25,0,0x333a44);box(sg,0.25,4.5,0.25,1.4,2.25,0,0x333a44);var bp=new THREE.Mesh(new THREE.PlaneGeometry(4,2),new THREE.MeshBasicMaterial({map:stex}));bp.position.set(0,4.6,0.2);sg.add(bp);sg.position.set(-7.2,0,-(si/3)*LOOP);scene.add(sg);signs.push(sg);}
+
 
 for(var l=0;l<12;l++){
   var pg=new THREE.Group();box(pg,0.2,4,0.2,0,2,0,0x333a44);box(pg,1.4,0.2,0.2,0.6,4,0,0x333a44);
@@ -426,8 +423,8 @@ function showLb(on){
   $('lb').style.display=on?'block':'none';document.querySelector('#ov .box').style.display=on?'none':'block';
   if(!on)return;
   var h='<h1>'+(lbMode?'Weekly':'Top 10')+'</h1>';
-  h+=save.pname&&!ren?'<p>Playing as '+esc(save.pname)+'</p><button id="pnchg">Change name</button>':'<p>Enter a name to join the board</p><div class="row" style="justify-content:center"><input id="pn" maxlength="12" placeholder="Your name" value="'+esc(save.pname||'')+'"><button id="pnsave">Save</button></div>';
-  $('lb').innerHTML=h+'<button id="lbtab">'+(lbMode?'Show all-time':'Show weekly')+'</button><div id="lbl" style="margin-top:12px"><p>Loading...</p></div><button id="lback">Back</button>';
+  h+=save.pname&&!ren?'<p>Playing as '+esc(save.pname)+'</p>':'<p>Enter a name to join the board</p><div class="row" style="justify-content:center"><input id="pn" maxlength="12" placeholder="Your name" value="'+esc(save.pname||'')+'"><button id="pnsave">Save</button></div>';
+  $('lb').innerHTML=h+'<div class="row" style="justify-content:center;gap:12px">'+(save.pname&&!ren?'<button id="pnchg">Change name</button>':'')+'<button id="lbtab">'+(lbMode?'All-time':'Weekly')+'</button></div><div id="lbl" style="margin-top:12px"><p>Loading...</p></div><button id="lback">Back</button>';
   loadLb();
 }
 $('lbbtn').addEventListener('click',function(){ren=false;showLb(true);});
@@ -625,7 +622,7 @@ function frame(t){
     poles.forEach(function(q){q.position.z+=v*dt;if(q.position.z>8)q.position.z-=LOOP;});
     bld.forEach(function(q){q.position.z+=v*dt;if(q.position.z>14)q.position.z-=LOOP;});
     tl.forEach(function(q){q.position.z+=v*dt;if(q.position.z>8)q.position.z-=96;});
-    [trees,palms,signs].forEach(function(arr){arr.forEach(function(q){q.position.z+=v*dt;if(q.position.z>8)q.position.z-=LOOP;});});
+    [trees,palms].forEach(function(arr){arr.forEach(function(q){q.position.z+=v*dt;if(q.position.z>8)q.position.z-=LOOP;});});
     props.forEach(function(p){p.position.z+=v*dt;if(p.position.z>8){p.position.z-=LOOP;p.position.x=(p.position.x<0?-1:1)*(7.5+Math.random()*14);}});
   }
   for(var i=traffic.length-1;i>=0;i--){
@@ -717,8 +714,6 @@ function frame(t){
   
   ww+=((NL===4?1:0)-ww)*Math.min(1,dt*2.5);roadM.scale.x=1+0.289*ww;roadM.position.x=1.1*ww;edgeR.position.x=3.7+2.4*ww;
   dashes.forEach(function(d){if(d.position.x>3)d.visible=ww>0.6;});
-  if(t-signT>500){signT=t;drawSign();}
-  signs.forEach(function(q){q.visible=zone!==1&&!city;});
   tun.visible=zone===1;brg.visible=zone===2;tl.forEach(function(q){q.visible=zone===1;});
   flames.forEach(function(f){f.visible=nitroT>0;var sc=1+Math.random()*1.4;f.scale.z=sc;f.position.z=1.75+sc*0.5;});
   var so=!save.calm&&(nitroT>0||(state==='play'&&speed>48));if(so!==spdOn){spdOn=so;$('spd').style.opacity=so?0.8:0;}
