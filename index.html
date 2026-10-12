@@ -39,7 +39,7 @@ button:focus-visible{outline:4px solid #ffd95a;outline-offset:3px}
 @media (prefers-reduced-motion:reduce){.pcar{animation:none}}
 .big button{font-size:15px!important;padding:16px 22px!important}.big p,.big .row{font-size:12px}
 .hc{--panel:#000}.hc #hud,.hc #pw,.hc #pop{text-shadow:2px 2px 0 #000,-2px -2px 0 #000,2px -2px 0 #000,-2px 2px 0 #000}.hc canvas{filter:contrast(1.25) saturate(1.1)}
-#pn,#rcin,#rcin2,#frq,#frn{font:inherit;font-size:10px;padding:8px;border:3px solid var(--ink);background:#0f1722;color:var(--ink);width:150px;min-width:0}
+#pn,#rcin,#rcin2,#frq,#frn,#chi{font:inherit;font-size:10px;padding:8px;border:3px solid var(--ink);background:#0f1722;color:var(--ink);width:150px;min-width:0}
 @keyframes rise{from{opacity:0;transform:translateY(14px)}}
 @media (prefers-reduced-motion:reduce){#ov .box{animation:none}}
 body.th1{--accent:#7a4fc7;--panel:rgba(14,12,34,.9)}body.th2{--accent:#2fb37a;--ink:#c8ffc8;--panel:rgba(8,24,10,.9)}
@@ -62,6 +62,10 @@ body.th1{--accent:#7a4fc7;--panel:rgba(14,12,34,.9)}body.th2{--accent:#2fb37a;--
 #emo button{padding:6px 10px!important;font-size:16px!important}
 #rci{position:absolute;top:56px;left:0;right:0;text-align:center;font-size:9px;text-shadow:2px 2px 0 #1b2a3a;pointer-events:none}
 #cd{position:absolute;inset:0;display:none;align-items:center;justify-content:center;font-size:72px;color:#ffd95a;text-shadow:5px 5px 0 #1b2a3a;pointer-events:none}
+.chm{height:190px;overflow-y:auto;text-align:left;margin:0 0 10px;padding:6px;border:2px solid rgba(255,255,255,.2)}
+.msg{font-size:9px;line-height:1.7;margin:0 0 8px;padding:5px 7px;background:rgba(255,255,255,.07);word-break:break-word}
+.msg.me{background:rgba(47,179,122,.3);margin-left:24px}.msg small{font-size:7px;opacity:.7}
+.chq{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:0 0 10px}.chq button{font-size:8px!important;padding:5px 7px!important}
 .dot{display:inline-block;width:8px;height:8px;margin-right:6px}
 #inb{position:absolute;top:50px;left:50%;transform:translateX(-50%);display:none;gap:8px;align-items:center;background:var(--panel);border:3px solid var(--ink);padding:8px 10px;font-size:9px;z-index:5;white-space:nowrap}
 #inb button{padding:4px 8px!important;font-size:9px!important}
@@ -112,8 +116,8 @@ button:disabled{opacity:.6;cursor:default}#ov{overflow:auto}
       <button id="spbtn"><b>🎡</b>Spin</button><button id="howbtn"><b>❓</b>Help</button><button id="frbtn"><b>🤝</b>Friends</button><button id="rcbtn"><b>🏁</b>Race</button><button id="setbtn"><b>⚙️</b>Settings</button>
     </div>
     <div id="menuw" style="margin-top:14px;display:none"><button id="menu">Main menu</button></div>
-    <p id="ver" style="font-size:8px;opacity:.7;margin:14px 0 0">v3.5.3</p>
-  </div><div class="box" id="gar" style="display:none"></div><div class="box" id="set" style="display:none"></div><div class="box" id="mis" style="display:none"></div><div class="box" id="how" style="display:none"></div><div class="box" id="stp" style="display:none"></div><div class="box" id="spn" style="display:none"></div><div class="box" id="lb" style="display:none"></div><div class="box" id="rcp" style="display:none"></div><div class="box" id="frp" style="display:none"></div></div>
+    <p id="ver" style="font-size:8px;opacity:.7;margin:14px 0 0">v3.6.0</p>
+  </div><div class="box" id="gar" style="display:none"></div><div class="box" id="set" style="display:none"></div><div class="box" id="mis" style="display:none"></div><div class="box" id="how" style="display:none"></div><div class="box" id="stp" style="display:none"></div><div class="box" id="spn" style="display:none"></div><div class="box" id="lb" style="display:none"></div><div class="box" id="rcp" style="display:none"></div><div class="box" id="frp" style="display:none"></div><div class="box" id="chp" style="display:none"></div></div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -348,7 +352,7 @@ function showOv(mode){
   ['gbtn','lbbtn','howbtn'].forEach(function(id){$(id).style.display='flex';});
   ['misbtn','stbtn','spbtn','rcbtn','frbtn'].forEach(function(id){$(id).style.display=p?'none':'flex';});
   $('shw').style.display=mode==='over'?'block':'none';$('rvw').style.display=mode==='over'&&revCount<3?'block':'none';$('rev').innerHTML='Revive <i class="coin"></i> '+rcost();$('bankp').style.display=p?'none':'block';
-  $('pause').style.visibility='hidden';showGarage(false);showSet(false);showMis(false);showHow(false);showStats(false);showSpin(false);showLb(false);showRace(false);showFr(false);$('ov').style.display='flex';
+  $('pause').style.visibility='hidden';showGarage(false);showSet(false);showMis(false);showHow(false);showStats(false);showSpin(false);showLb(false);showRace(false);showFr(false);showChat(false);$('ov').style.display='flex';
 }
 function pause(){if(state!=='play'||race.on)return;state='paused';persist();showOv('pause');}
 function resume(){if(state!=='paused'||resuming)return;resuming=true;wake();$('ov').style.display='none';$('pause').style.visibility='visible';var n=3;$('cd').style.display='flex';$('cd').textContent=n;var iv=setInterval(function(){n--;if(n>0){$('cd').textContent=n;return;}clearInterval(iv);$('cd').style.display='none';resuming=false;state='play';},1000);}
@@ -609,12 +613,12 @@ $('rcp').addEventListener('click',function(e){
 $('fs').addEventListener('click',function(){this.blur();try{if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen();}catch(e){}});
 if(!document.documentElement.requestFullscreen)$('fs').style.display='none';
 (function(){var pr=[120,260,520],tot=0;if(save.sk){Object.keys(save.sk).forEach(function(c){(save.sk[c]||[]).forEach(function(o,j){if(o)tot+=pr[j]||0;});});save.bank+=tot;delete save.sk;persist();}})();
-var pres={s:'menu',r:''},frReq=0,frInv=null,frOpen=false;
+var pres={s:'menu',r:''},frReq=0,frIb={},frUn=0,frInv=null,frOpen=false;
 function myCode(){return pid0().slice(-6).toUpperCase();}
 function beat(){if(!save.pname)return;apiR('players/'+pid0(),'PUT',{n:save.pname,nl:save.pname.toLowerCase(),c:myCode(),t:Date.now(),s:pres.s,r:pres.r}).then(function(){dbg.b='saved';}).catch(function(e){dbg.b='failed '+e;});}
 function setPres(s,r){r=r||'';if(pres.s===s&&pres.r===r)return;pres.s=s;pres.r=r;beat();}
 function apiQ(q){return getTok().then(function(tk){return fetch(DBURL+'/'+q+(q.indexOf('?')>=0?'&':'?')+'auth='+tk).then(function(r){if(!r.ok)throw r.status;return r.json();});});}
-function frBadge(){$('frbtn').innerHTML='<b>🤝</b>Friends'+(frReq?' ('+frReq+')':'');}
+function frBadge(){var n=frReq+frUn;$('frbtn').innerHTML='<b>🤝</b>Friends'+(n?' ('+n+')':'');}
 function stTxt(p){
   if(!p)return ['Unknown','#888'];
   if(Date.now()-(p.t||0)>60000)return ['Offline','#888'];
@@ -633,6 +637,7 @@ function joinRoom(c2,msg){
 function frPoll(){
   if(!save.pname)return;
   apiR('requests/'+pid0()).then(function(r){frReq=Object.keys(r||{}).length;frBadge();}).catch(function(){});
+  apiR('inbox/'+pid0()).then(function(ib){frIb=ib||{};frUn=Object.keys(frIb).filter(function(k){return frIb[k].t>((save.cs||{})[k]||0);}).length;frBadge();}).catch(function(){});
   apiR('invites/'+pid0()).then(function(iv){
     if(!iv||!iv.code||state==='play'||race.on)return;
     apiR('invites/'+pid0(),'DELETE').catch(function(){});
@@ -659,7 +664,7 @@ function loadFr(){
       arr.forEach(function(f){
         var st=stTxt(f.p),btn='';
         if(f.p&&st[0]!=='Offline'){if(f.p.s==='lobby'&&f.p.r)btn+='<button data-fa="join" data-r="'+esc(f.p.r)+'">Join</button> ';else if(inRoom)btn+='<button data-fa="inv" data-id="'+f.id+'">Invite</button> ';}
-        h+='<div class="row"><span><i class="dot" style="background:'+st[1]+'"></i>'+esc(f.p?f.p.n:'Friend')+'<br><small>'+st[0]+'</small></span><span>'+btn+'<button data-fa="rm" data-id="'+f.id+'">✕</button></span></div>';
+        h+='<div class="row"><span><i class="dot" style="background:'+st[1]+'"></i>'+esc(f.p?f.p.n:'Friend')+'<br><small>'+st[0]+'</small></span><span>'+btn+'<button data-fa="chat" data-id="'+f.id+'" data-n="'+esc(f.p?f.p.n:'Friend')+'">💬'+((frIb[f.id]&&frIb[f.id].t>((save.cs||{})[f.id]||0))?'●':'')+'</button> <button data-fa="rm" data-id="'+f.id+'">✕</button></span></div>';
       });
       var l=$('frl');if(l)l.innerHTML=h||'<p>No friends yet. Search for a name or a code above.</p>';
     });
@@ -688,8 +693,44 @@ $('frp').addEventListener('click',function(e){
   else if(fa==='dec'){apiR('requests/'+me+'/'+d.id,'DELETE').then(loadFr).catch(function(){});}
   else if(fa==='rm'){Promise.all([apiR('friends/'+me+'/'+d.id,'DELETE'),apiR('friends/'+d.id+'/'+me,'DELETE')]).then(loadFr).catch(function(){});}
   else if(fa==='inv'){apiR('invites/'+d.id,'PUT',{from:save.pname,code:race.code,t:Date.now()}).then(function(){b.textContent='Sent';b.disabled=true;}).catch(function(){});}
+  else if(fa==='chat'){showChat(true,d.id,d.n);}
   else if(fa==='join'){joinRoom(d.r,function(m){b.textContent=m.slice(0,14);});}
 });
+var chat={id:null,fid:null,fn:'',last:0,iv:null,busy:false,sc:0},QP=['Good race!','GG','Rematch?','Ready!','Join my room','Nice one!','Wait for me','Haha'];
+function cidOf(a,b){return [a,b].sort().join('_');}
+function cleanTxt(t){return t.replace(/https?:\/\/\S+|www\.\S+/gi,'[link]').replace(/\b(fuck\w*|shit\w*|bitch\w*|asshole|bastard|cunt|dick|slut|whore|nigg\w*|fag\w*|rape\w*|porn\w*|nude\w*)\b/gi,function(m){return new Array(m.length+1).join('*');});}
+function showChat(on,fid,fn){
+  var b=$('chp');b.style.display=on?'block':'none';document.querySelector('#ov .box').style.display=on?'none':'block';
+  if(!on){clearInterval(chat.iv);chat.iv=null;chat.id=null;return;}
+  frOpen=false;chat.fid=fid;chat.fn=fn;chat.id=cidOf(pid0(),fid);chat.sc=0;
+  b.innerHTML='<h1>'+esc(fn)+'</h1><div id="chm" class="chm"><p>Loading...</p></div><div class="chq">'+QP.map(function(q,i){return '<button data-q="'+i+'">'+esc(q)+'</button>';}).join('')+'</div><div class="row" style="justify-content:center"><input id="chi" maxlength="80" placeholder="Message"><button id="chs">Send</button></div><button id="chb">Back</button>';
+  loadChat();clearInterval(chat.iv);chat.iv=setInterval(loadChat,3000);
+}
+function loadChat(){
+  if(!chat.id||chat.busy)return;chat.busy=true;
+  apiQ('chats/'+chat.id+'.json?orderBy=%22%24key%22&limitToLast=30').then(function(o){
+    o=o||{};var ks=Object.keys(o).sort(),h='',me=pid0();
+    ks.forEach(function(k){var m=o[k],mine=m.f===me,d=new Date(m.t||0);h+='<div class="msg'+(mine?' me':'')+'"><small>'+esc(mine?'You':m.n)+' · '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)+'</small><br>'+esc(m.m)+'</div>';});
+    var box=$('chm');if(box){var atEnd=box.scrollTop+box.clientHeight>=box.scrollHeight-20;box.innerHTML=h||'<p>Say hi!</p>';if(atEnd||!chat.sc){box.scrollTop=box.scrollHeight;chat.sc=1;}}
+    save.cs=save.cs||{};save.cs[chat.fid]=Date.now();persist();
+    ks.forEach(function(k){if(o[k].f===me&&Date.now()-o[k].t>3*864e5)apiR('chats/'+chat.id+'/'+k,'DELETE').catch(function(){});});
+  }).catch(function(){var box=$('chm');if(box&&!chat.sc)box.innerHTML='<p>Could not load messages.</p>';}).then(function(){chat.busy=false;});
+}
+function sendChat(txt){
+  txt=cleanTxt((txt||'').trim()).slice(0,80);if(!txt||!chat.id)return;
+  var n=Date.now();if(n-chat.last<1200)return;chat.last=n;
+  var i=$('chi');if(i)i.value='';
+  apiR('chats/'+chat.id,'POST',{f:pid0(),n:save.pname||'Player',m:txt,t:n}).then(function(){
+    apiR('inbox/'+chat.fid+'/'+pid0(),'PUT',{t:n,n:save.pname||'Player'}).catch(function(){});loadChat();
+  }).catch(function(){});
+}
+$('chp').addEventListener('click',function(e){
+  var b=e.target.closest('button');if(!b)return;
+  if(b.id==='chb'){showChat(false);showFr(true);return;}
+  if(b.id==='chs'){sendChat($('chi').value);return;}
+  if(b.dataset.q!==undefined)sendChat(QP[+b.dataset.q]);
+});
+$('chp').addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.id==='chi'){e.preventDefault();sendChat($('chi').value);}});
 getTok().catch(function(){});
 var tk=0;setInterval(function(){tk++;frPoll();if(tk%3===0)beat();if(frOpen)loadFr();},8000);
 setTimeout(function(){beat();frPoll();},2500);
