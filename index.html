@@ -112,7 +112,7 @@ button:disabled{opacity:.6;cursor:default}#ov{overflow:auto}
       <button id="spbtn"><b>🎡</b>Spin</button><button id="howbtn"><b>❓</b>Help</button><button id="frbtn"><b>🤝</b>Friends</button><button id="rcbtn"><b>🏁</b>Race</button><button id="setbtn"><b>⚙️</b>Settings</button>
     </div>
     <div id="menuw" style="margin-top:14px;display:none"><button id="menu">Main menu</button></div>
-    <p id="ver" style="font-size:8px;opacity:.7;margin:14px 0 0">v3.5.0</p>
+    <p id="ver" style="font-size:8px;opacity:.7;margin:14px 0 0">v3.5.3</p>
   </div><div class="box" id="gar" style="display:none"></div><div class="box" id="set" style="display:none"></div><div class="box" id="mis" style="display:none"></div><div class="box" id="how" style="display:none"></div><div class="box" id="stp" style="display:none"></div><div class="box" id="spn" style="display:none"></div><div class="box" id="lb" style="display:none"></div><div class="box" id="rcp" style="display:none"></div><div class="box" id="frp" style="display:none"></div></div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -485,23 +485,23 @@ function raceUpdate(dt,v){
   raceT+=dt;wd+=v*dt;
   if(raceT>=nextRowT){rnd=mkRng(race.seed+rowK*7919);spawn();rnd=Math.random;var R=mkRng(race.seed*3+rowK*104729);nextRowT=raceT+((36-diff()*10)+R()*(12-diff()*4))/Math.max(8,v-9);rowK++;}
 }
-var AK='AIzaSyCUImGWB20NgcK2elPF6OfXgyJsC89CIvA',AUTH={uid:(save.auth&&save.auth.uid)||null,tok:null,exp:0},AUTHP=null;
+var AK='AIzaSyCUImGWB20NgcK2elPF6OfXgyJsC89CIvA',AUTH={uid:(save.auth&&save.auth.uid)||null,tok:null,exp:0},AUTHP=null,dbg={a:'starting',b:'-'};
 function authForm(j){return {tok:j.id_token||j.idToken,rt:j.refresh_token||j.refreshToken,uid:j.user_id||j.localId,exp:Date.now()+(+(j.expires_in||j.expiresIn))*1000};}
 function getTok(){
   if(AUTH.tok&&Date.now()<AUTH.exp-60000)return Promise.resolve(AUTH.tok);
   if(AUTHP)return AUTHP;
   var first=(save.auth&&save.auth.rt)?fetch('https://securetoken.googleapis.com/v1/token?key='+AK,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(save.auth.rt)}).then(function(r){if(!r.ok)throw 0;return r.json();}):Promise.reject();
-  AUTHP=first.catch(function(){return fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key='+AK,{method:'POST',headers:{'Content-Type':'application/json'},body:'{"returnSecureToken":true}'}).then(function(r){if(!r.ok)throw 0;return r.json();});}).then(function(j){
+  AUTHP=first.catch(function(){return fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key='+AK,{method:'POST',headers:{'Content-Type':'application/json'},body:'{"returnSecureToken":true}'}).then(function(r){if(!r.ok)throw 'sign-in '+r.status;return r.json();});}).then(function(j){
     var a=authForm(j);AUTH.tok=a.tok;AUTH.exp=a.exp;AUTH.uid=a.uid;save.auth={rt:a.rt,uid:a.uid};save.pid=a.uid;
     if(!save.authed){save.authed=1;save.top=0;save.w=null;}
-    persist();AUTHP=null;return a.tok;
-  },function(e){AUTHP=null;throw e;});
+    persist();AUTHP=null;dbg.a='ok';return a.tok;
+  },function(e){AUTHP=null;dbg.a='failed '+e;throw e;});
   return AUTHP;
 }
 function apiR(path,method,body){
   return getTok().then(function(tk){
     var ac=window.AbortController?new AbortController():null,tm=setTimeout(function(){if(ac)ac.abort();},10000);
-    return fetch(DBURL+'/'+path.replace(/@me/g,AUTH.uid)+'.json?auth='+tk,{method:method||'GET',headers:body!==undefined?{'Content-Type':'application/json'}:undefined,body:body!==undefined?JSON.stringify(body).replace(/@me/g,AUTH.uid):undefined,signal:ac?ac.signal:undefined}).then(function(r){clearTimeout(tm);if(!r.ok)throw 0;return r.json();},function(e){clearTimeout(tm);throw e;});
+    return fetch(DBURL+'/'+path.replace(/@me/g,AUTH.uid)+'.json?auth='+tk,{method:method||'GET',headers:body!==undefined?{'Content-Type':'application/json'}:undefined,body:body!==undefined?JSON.stringify(body).replace(/@me/g,AUTH.uid):undefined,signal:ac?ac.signal:undefined}).then(function(r){clearTimeout(tm);if(!r.ok)throw r.status;return r.json();},function(e){clearTimeout(tm);throw e;});
   });
 }
 function api(path,method,body){return apiR('rooms/'+path,method,body);}
@@ -611,9 +611,9 @@ if(!document.documentElement.requestFullscreen)$('fs').style.display='none';
 (function(){var pr=[120,260,520],tot=0;if(save.sk){Object.keys(save.sk).forEach(function(c){(save.sk[c]||[]).forEach(function(o,j){if(o)tot+=pr[j]||0;});});save.bank+=tot;delete save.sk;persist();}})();
 var pres={s:'menu',r:''},frReq=0,frInv=null,frOpen=false;
 function myCode(){return pid0().slice(-6).toUpperCase();}
-function beat(){if(!save.pname)return;apiR('players/'+pid0(),'PUT',{n:save.pname,nl:save.pname.toLowerCase(),c:myCode(),t:Date.now(),s:pres.s,r:pres.r}).catch(function(){});}
+function beat(){if(!save.pname)return;apiR('players/'+pid0(),'PUT',{n:save.pname,nl:save.pname.toLowerCase(),c:myCode(),t:Date.now(),s:pres.s,r:pres.r}).then(function(){dbg.b='saved';}).catch(function(e){dbg.b='failed '+e;});}
 function setPres(s,r){r=r||'';if(pres.s===s&&pres.r===r)return;pres.s=s;pres.r=r;beat();}
-function apiQ(q){return getTok().then(function(tk){return fetch(DBURL+'/'+q+(q.indexOf('?')>=0?'&':'?')+'auth='+tk).then(function(r){if(!r.ok)throw 0;return r.json();});});}
+function apiQ(q){return getTok().then(function(tk){return fetch(DBURL+'/'+q+(q.indexOf('?')>=0?'&':'?')+'auth='+tk).then(function(r){if(!r.ok)throw r.status;return r.json();});});}
 function frBadge(){$('frbtn').innerHTML='<b>🤝</b>Friends'+(frReq?' ('+frReq+')':'');}
 function stTxt(p){
   if(!p)return ['Unknown','#888'];
@@ -644,7 +644,7 @@ function showFr(on){
   if(!on)return;
   if(!save.pname){b.innerHTML='<h1>Friends</h1><p>Pick a name so friends can find you.</p><div class="row" style="justify-content:center"><input id="frn" maxlength="12" placeholder="Your name"><button id="frns">Save</button></div><button id="frback">Back</button>';return;}
   beat();
-  b.innerHTML='<h1>Friends</h1><p>Your code: '+myCode()+'</p><div class="row" style="justify-content:center"><input id="frq" maxlength="12" placeholder="Search name or code"><button id="frs">Search</button></div><div id="frres"></div><div id="frl"><p>Loading...</p></div><button id="frback">Back</button>';
+  b.innerHTML='<h1>Friends</h1><p>Your code: '+myCode()+'</p><div class="row" style="justify-content:center"><input id="frq" maxlength="6" placeholder="Friend code"><button id="frs">Search</button></div><div id="frres"></div><div id="frl"><p>Loading...</p></div><button id="frback">Back</button>';
   loadFr();
 }
 function loadFr(){
@@ -673,12 +673,11 @@ $('frp').addEventListener('click',function(e){
   if(id==='frback'){showFr(false);return;}
   if(id==='frns'){var v=($('frn').value||'').replace(/[^\w \-]/g,'').trim().slice(0,12);if(!v)return;save.pname=v;persist();showFr(true);return;}
   if(id==='frs'){
-    var q=($('frq').value||'').trim().toLowerCase();if(!q)return;var out=$('frres');out.innerHTML='<p>Searching...</p>';
-    var urlN='players.json?orderBy=%22nl%22&startAt=%22'+encodeURIComponent(q)+'%22&endAt=%22'+encodeURIComponent(q)+'\uf8ff%22&limitToFirst=8';
-    var urlC=q.length===6?'players.json?orderBy=%22c%22&equalTo=%22'+q.toUpperCase()+'%22':null;
-    Promise.all([apiQ(urlN),urlC?apiQ(urlC):Promise.resolve({})]).then(function(rs){
-      var o=Object.assign({},rs[0]||{},rs[1]||{}),ids=Object.keys(o).filter(function(k){return k!==me;}),h='';
-      ids.forEach(function(k){h+='<div class="row"><span>'+esc(o[k].n)+'</span><button data-fa="add" data-id="'+k+'">Add</button></div>';});
+    var q=($('frq').value||'').trim().toLowerCase();if(!q)return;var out=$('frres');if(q.length!==6){out.innerHTML='<p>Enter the 6-letter friend code.</p>';return;}out.innerHTML='<p>Searching...</p>';
+    apiQ('players.json?orderBy=%22c%22&equalTo=%22'+q.toUpperCase()+'%22').then(function(o){
+      o=o||{};
+      var ids=Object.keys(o).filter(function(k){var pr=o[k]||{};return k!==me&&(pr.c||'').toLowerCase()===q;}).slice(0,8),h='';
+      ids.forEach(function(k){h+='<div class="row"><span>'+esc(o[k].n||'Player')+'</span><button data-fa="add" data-id="'+k+'">Add</button></div>';});
       out.innerHTML=h||'<p>Nobody found.</p>';
     }).catch(function(){out.innerHTML='<p>Search failed.</p>';});
     return;
