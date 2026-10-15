@@ -130,7 +130,7 @@ button:disabled{opacity:.6;cursor:default}#ov{overflow:auto;touch-action:pan-y;-
       <button id="spbtn"><b>🎡</b>Spin</button><button id="howbtn"><b>❓</b>Help</button><button id="frbtn"><b>🤝</b>Friends</button><button id="rcbtn"><b>🏁</b>Race</button><button id="nwbtn"><b>📰</b>News</button><button id="setbtn"><b>⚙️</b>Settings</button>
     </div>
     <div id="menuw" style="margin-top:14px;display:none"><button id="menu">Main menu</button></div>
-    <p id="ver" style="font-size:8px;opacity:.7;margin:14px 0 0">v3.14.0</p>
+    <p id="ver" style="font-size:8px;opacity:.7;margin:14px 0 0">v3.14.1</p>
   </div><div class="box" id="gar" style="display:none"></div><div class="box" id="set" style="display:none"></div><div class="box" id="mis" style="display:none"></div><div class="box" id="how" style="display:none"></div><div class="box" id="stp" style="display:none"></div><div class="box" id="spn" style="display:none"></div><div class="box" id="lb" style="display:none"></div><div class="box" id="rcp" style="display:none"></div><div class="box" id="frp" style="display:none"></div><div class="box" id="chp" style="display:none"></div><div class="box" id="nwp" style="display:none"></div><div class="box" id="wel" style="display:none"></div></div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -812,7 +812,8 @@ $('chp').addEventListener('click',function(e){
   if(b.dataset.q!==undefined)sendChat(QP[+b.dataset.q]);
 });
 $('chp').addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.id==='chi'){e.preventDefault();sendChat($('chi').value);}});
-var NEWSV='3.14.0',NEWS=[
+var NEWSV='3.14.1',NEWS=[
+{v:'3.14.1',t:['Fixed the Google sign-in screen going black. Signing in now opens a small Google window and brings you straight back to Settings.']},
 {v:'3.14.0',t:['Cloud backup with Google! Sign in once from Settings and your progress saves by itself after every run, race and purchase. On a new phone, sign in again to restore it.']},
 {v:'3.13.0',t:['New limited item: the Abbas Rickshaw! A black and yellow three-wheeler with the fastest speed gain of any car. Its front lifts into a wheelie when you use nitro. It costs 20,000 coins and is only in the Garage for 5 days. Once you buy it, it is yours forever.']},
 {v:'3.12.0',t:['New speedometer! A round dial at the bottom of the screen shows your speed in km/h. It turns yellow and red as you go faster, works in races and when you spectate, and can be switched off in Settings.']},
@@ -943,7 +944,7 @@ addEventListener('pagehide',function(){
   if(save.gl&&cloud.dirty&&AUTH.tok){try{fetch(DBURL+'/backups/'+AUTH.uid+'.json?auth='+AUTH.tok,{method:'PUT',body:JSON.stringify(cloudData()),keepalive:true});}catch(e){}}
 });
 function idp(cred,tok){
-  var body={postBody:'id_token='+cred+'&providerId=google.com',requestUri:location.origin,returnIdpCredential:true,returnSecureToken:true};
+  var body={postBody:'access_token='+cred+'&providerId=google.com',requestUri:location.origin,returnIdpCredential:true,returnSecureToken:true};
   if(tok)body.idToken=tok;
   return fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key='+AK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json().then(function(j){if(!r.ok)throw (j.error&&j.error.message)||'error';return j;});});
 }
@@ -955,7 +956,7 @@ function cloudErr(e){
 }
 function googleDone(cred){
   getTok().then(function(tk){return idp(cred,tk);}).then(function(){
-    save.gl=1;persist();$('gslot').style.display='none';$('cbtn').textContent='Back up now';cloudSave(1);
+    save.gl=1;persist();var gs=$('gslot'),cb=$('cbtn');if(gs)gs.style.display='none';if(cb)cb.textContent='Back up now';cloudSave(1);
   },function(e){
     if(String(e).indexOf('ALREADY_LINKED')>=0||String(e).indexOf('CREDENTIAL_ALREADY_IN_USE')>=0||String(e).indexOf('EMAIL_EXISTS')>=0){
       if(!confirm('This Google account already has saved progress. Restore it on this device? Your current progress on this device will be replaced.')){cloudStatus('Not signed in');return;}
@@ -975,10 +976,11 @@ function googleDone(cred){
 function cloudBtn(){
   if(save.gl){cloudSave(1);return;}
   if(!GCID){cloudStatus('Google sign-in is not set up yet.');return;}
-  if(!window.google||!google.accounts){cloudStatus('Google is still loading, try again.');return;}
-  var g=$('gslot');g.style.display='block';g.innerHTML='';
-  google.accounts.id.initialize({client_id:GCID,callback:function(r){googleDone(r.credential);}});
-  google.accounts.id.renderButton(g,{theme:'filled_black',size:'large',text:'signin_with'});
+  if(!window.google||!google.accounts||!google.accounts.oauth2){cloudStatus('Google is still loading, try again.');return;}
+  try{
+    var tc=google.accounts.oauth2.initTokenClient({client_id:GCID,scope:'openid email profile',callback:function(r){if(r&&r.access_token)googleDone(r.access_token);else cloudStatus('Sign-in cancelled.');},error_callback:function(e){cloudStatus(e&&e.type==='popup_closed'?'Sign-in cancelled.':'Could not open Google sign-in. Try opening the game in Chrome or Safari.');}});
+    cloudStatus('Opening Google...');tc.requestAccessToken({prompt:'select_account'});
+  }catch(e){cloudStatus('Could not start Google sign-in.');}
 }
 var RS=Date.UTC(2026,9,14),RE=RS+5*864e5;
 function rickOn(){var n=Date.now();return n>=RS&&n<RE;}
