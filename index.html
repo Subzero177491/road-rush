@@ -130,7 +130,7 @@ button:disabled{opacity:.6;cursor:default}#ov{overflow:auto;touch-action:pan-y;-
       <button id="spbtn"><b>🎡</b>Spin</button><button id="howbtn"><b>❓</b>Help</button><button id="frbtn"><b>🤝</b>Friends</button><button id="rcbtn"><b>🏁</b>Race</button><button id="nwbtn"><b>📰</b>News</button><button id="setbtn"><b>⚙️</b>Settings</button>
     </div>
     <div id="menuw" style="margin-top:14px;display:none"><button id="menu">Main menu</button></div>
-    <p id="ver" style="font-size:8px;opacity:.7;margin:14px 0 0">v3.14.1</p>
+    <p id="ver" style="font-size:8px;opacity:.7;margin:14px 0 0">v3.14.2</p>
   </div><div class="box" id="gar" style="display:none"></div><div class="box" id="set" style="display:none"></div><div class="box" id="mis" style="display:none"></div><div class="box" id="how" style="display:none"></div><div class="box" id="stp" style="display:none"></div><div class="box" id="spn" style="display:none"></div><div class="box" id="lb" style="display:none"></div><div class="box" id="rcp" style="display:none"></div><div class="box" id="frp" style="display:none"></div><div class="box" id="chp" style="display:none"></div><div class="box" id="nwp" style="display:none"></div><div class="box" id="wel" style="display:none"></div></div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -276,7 +276,7 @@ var save={bank:0,own:[0],sel:0};
 try{var sv=JSON.parse(localStorage.getItem('pixhwy-save'));if(sv&&sv.own)save=sv;}catch(e){}
 if(save.own.indexOf(9)>=0){save.bank+=150;}
 save.own=save.own.filter(function(i){return i<CARS.length;});if(save.sel>=CARS.length)save.sel=0;
-function persist(){try{localStorage.setItem('pixhwy-save',JSON.stringify(save));}catch(e){}if(typeof cloudMark==='function')cloudMark();}
+function persist(){try{localStorage.setItem('pixhwy-save',JSON.stringify(save));}catch(e){}if(typeof cloudMark==='function'&&typeof cloud!=='undefined'&&cloud)cloudMark();}
 var player=new THREE.Group(),model=null;scene.add(player);
 var S={};
 function setCar(){var st=CARS[save.sel][4];S={coin:st.coin||1,shield:st.shield||0,agi:(st.agi||11)+2*up().a,nar:st.nar||0,acc:st.acc||0.035,top:st.top||85};if(model)player.remove(model);model=makeCar((save.paint&&save.paint[save.sel])||CARS[save.sel][1],CARS[save.sel][5]);addCust(model,CARS[save.sel][5]);player.add(model);}
@@ -812,7 +812,8 @@ $('chp').addEventListener('click',function(e){
   if(b.dataset.q!==undefined)sendChat(QP[+b.dataset.q]);
 });
 $('chp').addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.id==='chi'){e.preventDefault();sendChat($('chi').value);}});
-var NEWSV='3.14.1',NEWS=[
+var NEWSV='3.14.2',NEWS=[
+{v:'3.14.2',t:['Fixed the game freezing with a black screen after signing in with Google and refreshing. Your progress was not lost.']},
 {v:'3.14.1',t:['Fixed the Google sign-in screen going black. Signing in now opens a small Google window and brings you straight back to Settings.']},
 {v:'3.14.0',t:['Cloud backup with Google! Sign in once from Settings and your progress saves by itself after every run, race and purchase. On a new phone, sign in again to restore it.']},
 {v:'3.13.0',t:['New limited item: the Abbas Rickshaw! A black and yellow three-wheeler with the fastest speed gain of any car. Its front lifts into a wheelie when you use nitro. It costs 20,000 coins and is only in the Garage for 5 days. Once you buy it, it is yours forever.']},
@@ -926,7 +927,7 @@ function ago(t){var m=Math.floor((Date.now()-t)/60000);return m<1?'just now':m+'
 function cloudTxt(){return cloud.msg||(save.gl?(cloud.last?'Saved '+ago(cloud.last):'Signed in with Google'):'Not signed in');}
 function cloudStatus(msg){cloud.msg=msg||'';var e=$('cbs');if(e)e.textContent=cloudTxt();}
 function cloudMark(){
-  if(!save.gl)return;cloud.dirty=1;if(cloud.t)return;
+  if(!save.gl||typeof cloud==='undefined'||!cloud)return;cloud.dirty=1;if(cloud.t)return;
   cloud.t=setTimeout(function(){cloud.t=null;cloudSave();},state==='play'?120000:15000);
 }
 function cloudData(){var o=JSON.parse(JSON.stringify(save));delete o.auth;delete o.pid;return {t:Date.now(),v:VER,d:JSON.stringify(o)};}
