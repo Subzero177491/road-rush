@@ -134,7 +134,7 @@ button:disabled{opacity:.6;cursor:default}#ov{overflow:auto;touch-action:pan-y;-
       <button id="spbtn"><b>🎡</b>Spin</button><button id="howbtn"><b>❓</b>Help</button><button id="frbtn"><b>🤝</b>Friends</button><button id="rcbtn"><b>🏁</b>Race</button><button id="nwbtn"><b>📰</b>News</button><button id="setbtn"><b>⚙️</b>Settings</button>
     </div>
     <div id="menuw" style="margin-top:14px;display:none"><button id="menu">Main menu</button></div>
-    <p id="ver" style="font-size:8px;opacity:.7;margin:14px 0 0">v3.20.0</p>
+    <p id="ver" style="font-size:8px;opacity:.7;margin:14px 0 0">v3.26.0</p>
   </div><div class="box" id="gar" style="display:none"></div><div class="box" id="set" style="display:none"></div><div class="box" id="mis" style="display:none"></div><div class="box" id="how" style="display:none"></div><div class="box" id="stp" style="display:none"></div><div class="box" id="spn" style="display:none"></div><div class="box" id="lb" style="display:none"></div><div class="box" id="rcp" style="display:none"></div><div class="box" id="frp" style="display:none"></div><div class="box" id="chp" style="display:none"></div><div class="box" id="nwp" style="display:none"></div><div class="box" id="wel" style="display:none"></div></div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -216,6 +216,16 @@ var trees=[],palms=[];
 for(var ti2=0;ti2<20;ti2++){var tg2=new THREE.Group();box(tg2,0.5,1.8,0.5,0,0.9,0,0x6b4a2b);box(tg2,2.4,1.1,2.4,0,2.3,0,0x2f7a3a);box(tg2,1.7,1.1,1.7,0,3.2,0,0x3a8f46);box(tg2,0.9,1,0.9,0,4.1,0,0x4aa356);tg2.position.set((ti2%2?1:-1)*(7.5+Math.random()*12),0,-(ti2/20)*LOOP);tg2.visible=false;scene.add(tg2);trees.push(tg2);}
 for(var pi2=0;pi2<10;pi2++){var pm=new THREE.Group();box(pm,0.4,3.2,0.4,0,1.6,0,0x9a7a4a);box(pm,3,0.2,0.8,0,3.3,0,0x3fae4a);box(pm,0.8,0.2,3,0,3.35,0,0x3fae4a);pm.position.set(7.5+Math.random()*10,0,-(pi2/10)*LOOP);pm.visible=false;scene.add(pm);palms.push(pm);}
 var sea=box(scene,100,0.1,320,-62,0.03,-110,0x2f8fd8);sea.visible=false;
+var stalls=[],STC=[0xd9342b,0x2fb37a,0x3a7fd9,0xe0a93a,0xaf4fd9];
+function makeStall(){
+  var g=new THREE.Group(),c=STC[Math.floor(Math.random()*STC.length)];
+  box(g,1.6,0.9,1,0,0.45,0,0x8a6a42);
+  box(g,0.12,1.7,0.12,-0.75,1.15,-0.35,0x5a4228);box(g,0.12,1.7,0.12,0.75,1.15,-0.35,0x5a4228);
+  box(g,2,0.15,1.3,0,2,-0.3,c);box(g,2,0.4,0.12,0,1.75,-0.94,c);
+  for(var k=0;k<3;k++)box(g,0.22,0.22,0.22,-0.5+k*0.5,0.98,0.15,STC[Math.floor(Math.random()*STC.length)]);
+  return g;
+}
+for(var si2=0;si2<20;si2++){var sg2=makeStall(),sside=si2%2?1:-1;sg2.position.set(sside*(7.5+Math.random()*10),0,-(si2/20)*LOOP);if(sside<0)sg2.rotation.y=Math.PI;sg2.visible=false;scene.add(sg2);stalls.push(sg2);}
 
 
 for(var l=0;l<12;l++){
@@ -244,7 +254,7 @@ function makeTruck(){
   return g;
 }
 function makeCoin(){return new THREE.Mesh(new THREE.BoxGeometry(0.8,0.8,0.15),mat(0xffd23a));}
-var PU=[0xff8a1f,0x66e0ff,0xe05cff];
+var PU=[0xff8a1f,0x66e0ff,0xe05cff,0xffd93a];
 function makeVar(color,ty){
   var g=new THREE.Group(),dark=0x253447,tire=0x111418;
   function W(w,h,d,x,y,z,c){return box(g,w,h,d,x,y,z,c);}
@@ -272,7 +282,16 @@ function makeRock(){var g=new THREE.Group();box(g,1.6,1.3,1.6,0,0.65,0,0x7a6a58)
 function makeCone(){var g=new THREE.Group();[-0.7,0,0.7].forEach(function(x){box(g,0.6,0.15,0.6,x,0.08,0,0x333a44);box(g,0.4,0.5,0.4,x,0.4,0,0xff7a1a);box(g,0.42,0.1,0.42,x,0.45,0,0xffffff);});return g;}
 function makeRamp(){var m=new THREE.Mesh(new THREE.BoxGeometry(2.2,0.25,4),new THREE.MeshLambertMaterial({color:0xe9b54a}));m.rotation.x=0.22;return m;}
 function makeCar(color,ty){return ty?makeVar(color,ty):makeBase(color);}
-function makeOil(){return new THREE.Mesh(new THREE.BoxGeometry(2,0.05,3.4),new THREE.MeshBasicMaterial({color:0x14171c}));}
+function makeOil(cart){
+  if(!cart)return new THREE.Mesh(new THREE.BoxGeometry(2,0.05,3.4),new THREE.MeshBasicMaterial({color:0x14171c}));
+  var g=new THREE.Group();
+  box(g,1.1,0.6,1.6,0,0.32,0,0xb8bec4);
+  box(g,1.3,0.08,1.8,0,0.05,0,0x2a2e33);
+  box(g,0.22,0.3,0.22,-0.45,0.15,-0.7,0x2a2e33);box(g,0.22,0.3,0.22,0.45,0.15,-0.7,0x2a2e33);
+  box(g,0.22,0.3,0.22,-0.45,0.15,0.7,0x2a2e33);box(g,0.22,0.3,0.22,0.45,0.15,0.7,0x2a2e33);
+  g.rotation.z=0.5;g.rotation.x=0.15;
+  return g;
+}
 function makeBlock(){var g=new THREE.Group();box(g,2.1,0.9,0.5,0,0.65,0,0xeeeeee);[-0.7,0,0.7].forEach(function(x){box(g,0.5,0.92,0.52,x,0.65,0,0xe0452f);});box(g,0.15,0.4,0.15,-0.9,0.2,0,0x333a44);box(g,0.15,0.4,0.15,0.9,0.2,0,0x333a44);return g;}
 function makePickup(t){var m=new THREE.Mesh(new THREE.BoxGeometry(0.9,0.9,0.9),new THREE.MeshBasicMaterial({color:PU[t]}));m.userData={t:t};return m;}
 var CARS=[['Red Racer',0xd9342b,0,'Balanced',{acc:0.035,top:85}],['Taxi',0xf2b632,60,'Coins worth 1.5x',{coin:1.5,acc:0.031,top:82}],['Police',0x2f6fdb,100,'Starts with a shield',{shield:1,acc:0.034,top:86}],['Mint',0x2fb37a,140,'Quick lane changes',{agi:17,acc:0.036,top:85}],['Ghost',0xeeeeee,220,'Slimmer, harder to hit',{nar:0.3,acc:0.034,top:86}],['Sport',0xff6a1a,300,'Fastest lane changes',{agi:22,acc:0.042,top:92},1],['Monster',0x7a4fc7,400,'Starts with a shield, wider',{shield:1,nar:-0.25,acc:0.036,top:88},2],['Bus',0xf29e1f,500,'Coins worth 2x, wide body',{coin:2,nar:-0.35,acc:0.035,top:87},3],['Abbas Rickshaw',0xf2c200,15000,'Limited item: fastest speed gain, wheelie on nitro',{acc:0.05,top:95,lim:1},4]];
@@ -300,7 +319,16 @@ function glow(x,y,z,w,h,c){var m=box(player,w,h,0.05,x,y,z,c);m.material=new THR
 var flames=[-0.5,0.5].map(function(x){var f=box(player,0.35,0.3,1,x,0.6,2.3,0xff8a1f);f.material=new THREE.MeshBasicMaterial({color:0xff8a1f});f.visible=false;return f;});
 
 var traffic=[],coinsArr=[],pickups=[],coinAcc=0,nitroT=0,nitroM=0,nitroUiP=-1,nitroUiV=null,magT=0,shield=0,coinCount=0,muted=!!save.mute,crashFly=0,slipT=0,oils=[],debris=[],nextBoss=500,runNM=0,rainK=0,jumpT=0,ramps=[],comboN=0,comboT=0,lastM=0,fpsAcc=0,fpsN=0,spdOn=false,lastZone=0,revCount=0,rockT=0,lastEv=0,runT=0,wd=0,rec=[],lastRec=0,gh=null,pwHtml='',neonOn=false,graceT=0,smT=0,smOn=false,tilt=0,gasHold=0,brkHold=0,gasOn=false,brkOn=false,gasVis=false,carSeq=0,SPZ=-115,spdT=0,spdF=1,agT=0,agF=1,dmF=1,cmF=1,echoN=0,nmT=0,pwT=0,cmulT=0,dmulT=0,autoT=0,autoC=0,phx=0,xpMul=1,jb=0,calmT=0,slowT=0,skCd=[0,0,0],skSig='',skOn=false,skT=0,hitCar=null,hcv=0,hcy=0,czMsg=false,resuming=false,oppW=null,oppX=0,rnd=Math.random,wd=0,raceT=0,rowK=0,nextRowT=0,lastXp=0,lbMode=0,lastFree=1,bossPending=false,bossJust=false,ren=false,ww=0,holdT=0,nwMsg=false,dailyMsg='';
-var BIOMES=[[0x7fd1e8,0xe8c27a,0.65],[0xf08a5d,0xd9a066,0.55],[0x1b2440,0x3b4a5a,0.3],[0xbfd8e8,0xf2f6fa,0.75],[0x56636f,0x8c9170,0.42],[0xa9c4d8,0x6b7078,0.62],[0x8fd1a0,0x4f8f4a,0.62],[0x8fe0f0,0xf0dca0,0.7],[0x1a0f33,0x2a2440,0.28]];
+var BIOMES=[[0x7fd1e8,0xe8c27a,0.65],[0xf08a5d,0xd9a066,0.55],[0x1b2440,0x3b4a5a,0.3],[0xbfd8e8,0xf2f6fa,0.75],[0x56636f,0x8c9170,0.42],[0xa9c4d8,0x6b7078,0.62],[0x8fd1a0,0x4f8f4a,0.62],[0x8fe0f0,0xf0dca0,0.7],[0x1a0f33,0x2a2440,0.28],[0xf5d28a,0xc2a378,0.6]];
+var bSeq=[0],bSeed=1;
+function biomeAt(seg){
+  while(bSeq.length<=seg){
+    var n=bSeq.length,h=Math.sin(n*12.9898+bSeed*78.233)*43758.5453,idx=Math.floor((h-Math.floor(h))*BIOMES.length);
+    if(idx===bSeq[n-1])idx=(idx+1)%BIOMES.length;
+    bSeq.push(idx);
+  }
+  return bSeq[seg];
+}
 var curSky=new THREE.Color(SKY),curGround=new THREE.Color(0xe8c27a),curAmb=0.65,bt=new THREE.Color(),ambient=scene.children[0];
 var AC=null,eng=null,engG=null;
 function audioInit(){
@@ -327,6 +355,7 @@ function reset(){
   traffic.forEach(function(t){scene.remove(t);});traffic.length=0;
   coinsArr.forEach(function(t){scene.remove(t);});coinsArr.length=0;pickups.forEach(function(t){scene.remove(t);});pickups.length=0;nitroT=0;nitroM=0;magT=0;shield=0;shieldM.visible=false;player.rotation.z=0;player.position.y=0;crashFly=0;slipT=0;nextBoss=500;runNM=0;jumpT=0;comboN=0;hitCar=null;spdT=0;agT=0;nmT=0;pwT=0;echoN=0;cmulT=0;dmulT=0;autoT=0;phx=0;xpMul=1;jb=0;calmT=0;slowT=0;skCd=[0,0,0];revCount=0;rockT=0;lastEv=0;graceT=0;player.visible=true;lastFree=1;bossPending=false;bossJust=false;puffs.forEach(function(t){scene.remove(t.m);});puffs.length=0;ramps.forEach(function(t){scene.remove(t);});ramps.length=0;oils.forEach(function(t){scene.remove(t);});oils.length=0;debris.forEach(function(t){scene.remove(t.m);});debris.length=0;coinCount=0;$('coins').textContent='0';
   lane=1;px=0;speed=32;dist=0;spawnT=20;shake=0;
+  bSeq=[0];bSeed=1+Math.random()*9999;
 }
 function start(){
   setPres('solo');$('rci').textContent='';audioInit();wake();showGarage(false);reset();player.rotation.y=0;shield=(S.shield?1:0)+(save.pre==='s'?1:0);shieldM.visible=shield>0;if(save.pre==='n')nitroT=5;save.pre=null;state='play';$('ov').style.display='none';$('pause').style.visibility='visible';
@@ -524,7 +553,7 @@ function postWeekly(m){
   var prev=save.w.top;save.w.top=m;persist();
   apiR('weekly/'+w+'/'+pid0(),'PUT',{n:save.pname,d:m}).catch(function(){save.w.top=prev;persist();});
 }
-var VER='3.20.0',EMO=['👍','😂','😮'],race={on:false,dead:false,om:{},rm:0,e:0,et:0,opt:{mode:'last',goal:1000,pu:1,tr:1,eq:0,sp:0}};
+var VER='3.26.0',EMO=['👍','😂','😮'],race={on:false,dead:false,om:{},rm:0,e:0,et:0,opt:{mode:'last',goal:1000,pu:1,tr:1,eq:0,sp:0}};
 var oppMs=[0x66ccff,0x66ff99,0xffaa55].map(function(c){var m=makeBase(c);m.traverse(function(o){if(o.material){o.material=o.material.clone();o.material.transparent=true;o.material.opacity=0.45;}});m.visible=false;scene.add(m);return m;});
 function mkRng(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 function rowPos(k){
@@ -847,7 +876,9 @@ $('chp').addEventListener('click',function(e){
   if(b.dataset.q!==undefined)sendChat(QP[+b.dataset.q]);
 });
 $('chp').addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.id==='chi'){e.preventDefault();sendChat($('chi').value);}});
-var NEWSV='3.20.0',NEWS=[
+var NEWSV='3.26.0',NEWS=[
+{v:'3.26.0',t:['The Market biome now has its own hazard — toppled shopping carts in the road instead of oil slicks. Same effect if you hit one, just a different look to match the scenery.']},
+{v:'3.25.0',t:['New Market biome with colorful roadside stalls. Biomes now shuffle into a random order each run instead of a fixed cycle (you always start in the same one). New yellow pickup doubles your coins for a while — grab another before it runs out to extend the time, not the multiplier.']},
 {v:'3.20.0',t:['Nitro meter! Orange nitro pickups now fill a meter instead of firing right away. It stays full until you want it, so tap the bar at the bottom of the screen (or press N on a computer) to fire off a boost whenever you need it. The fuller the bar, the longer the boost.']},
 {v:'3.18.2',t:['Fixed a glitch where turning with the Bus gave endless close calls. The Abbas Rickshaw now costs 15,000 coins and stays in the Garage for 10 days instead of 5.']},
 {v:'3.18.1',t:['Spectating fixes: it no longer shows an old run while connecting, paused runs freeze correctly, the watcher count no longer depends on phone clocks, and joining a race while watching works.']},
@@ -1114,7 +1145,7 @@ function bonus(n){coinCount+=n;save.bank+=n;persist();updateBank();$('coins').te
 function showHow(on){
   $('how').style.display=on?'block':'none';document.querySelector('#ov .box').style.display=on?'none':'block';
   if(!on)return;save.seen=1;persist();
-  $('how').innerHTML='<h1>How to play</h1><p>Tap the left or right side to change lanes, or swipe if you chose it in Settings.</p><p>On a computer use the arrow keys or A and D, P to pause, and Enter to start.</p><p>Collect coins. Orange = nitro, blue = shield, purple = magnet.</p><p>Nitro pickups fill your nitro meter in the bottom right. It stays full until you tap it (or press N) to fire off a boost — the fuller the meter, the longer the boost lasts.</p><p>Squeeze past traffic for close calls and a combo. Drive onto ramps to jump over cars. Avoid oil.</p><button id="hback">Back</button>';
+  $('how').innerHTML='<h1>How to play</h1><p>Tap the left or right side to change lanes, or swipe if you chose it in Settings.</p><p>On a computer use the arrow keys or A and D, P to pause, and Enter to start.</p><p>Collect coins. Orange = nitro, blue = shield, purple = magnet, yellow = 2x coins for a while.</p><p>Nitro pickups fill your nitro meter in the bottom right. It stays full until you tap it (or press N) to fire off a boost — the fuller the meter, the longer the boost lasts.</p><p>Squeeze past traffic for close calls and a combo. Drive onto ramps to jump over cars. Avoid oil — and in the Market, watch for toppled carts.</p><button id="hback">Back</button>';
 }
 $('howbtn').addEventListener('click',function(){showHow(true);});
 $('how').addEventListener('click',function(e){if(e.target.id==='hback')showHow(false);});
@@ -1248,9 +1279,9 @@ function spawn(){
   if(rnd()<0.6){
     var cl=pf;
     for(var q=0;q<4;q++){var co=makeCoin();co.position.set(LANES[cl],1,SPZ-q*3);scene.add(co);coinsArr.push(co);}
-  }else if(free.length>0&&rnd()<0.35){var ol=makeOil();ol.position.set(LANES[free[Math.floor(rnd()*free.length)]],0.07,SPZ+3);scene.add(ol);oils.push(ol);}
+  }else if(free.length>0&&rnd()<0.35){var isCart=biomeAt(Math.floor(dist/150))===9;var ol=makeOil(isCart);ol.position.set(LANES[free[Math.floor(rnd()*free.length)]],isCart?0:0.07,SPZ+3);ol.userData.cart=isCart;scene.add(ol);oils.push(ol);}
   if(!race.on&&rnd()<0.08){var rp=makeRamp();rp.position.set(LANES[Math.floor(rnd()*SL)],0.3,SPZ+3);scene.add(rp);ramps.push(rp);}
-  if((!race.on||race.opt.pu)&&rnd()<0.13){var pk=makePickup(Math.floor(rnd()*(race.on?2:3)));pk.position.set(LANES[Math.floor(rnd()*SL)],1.1,SPZ-20);scene.add(pk);pickups.push(pk);}
+  if((!race.on||race.opt.pu)&&rnd()<0.13){var pk=makePickup(Math.floor(rnd()*(race.on?2:4)));pk.position.set(LANES[Math.floor(rnd()*SL)],1.1,SPZ-20);scene.add(pk);pickups.push(pk);}
 }
 
 function frame(t){
@@ -1284,7 +1315,7 @@ function frame(t){
     var fl=[0,1,2,3].slice(0,SL).filter(function(i){return !occ[i];});
     if(fl.length>1){var rk=makeRock();rk.userData={hw:1.5,hl:1.7,sp:9,minD:99,id:++carSeq,done:false,fall:true};rk.position.set(LANES[fl[Math.floor(Math.random()*fl.length)]],14,-60);scene.add(rk);traffic.push(rk);}}
     if(jumpT>0){jumpT-=dt;if(jumpT<=0){jumpT=0;bonus(5+jb);popup('Air time! +'+(5+jb));jb=0;}}madd(1,v*dt*0.25);save.tot=(save.tot||0)+v*dt*0.25;
-    var pw=[];if(nitroT>0)pw.push(['#ff8a1f',nitroT/10,'']);if(shield>0)pw.push(['#66e0ff',1,shield>1?'x'+shield:'']);if(magT>0)pw.push(['#e05cff',magT/20,'']);if(mult()>1)pw.push(['#ffd95a',comboT/6,'x'+mult()]);
+    var pw=[];if(nitroT>0)pw.push(['#ff8a1f',nitroT/10,'']);if(shield>0)pw.push(['#66e0ff',1,shield>1?'x'+shield:'']);if(magT>0)pw.push(['#e05cff',magT/20,'']);if(cmulT>0)pw.push(['#ffd93a',cmulT/15,'']);if(mult()>1)pw.push(['#ffd95a',comboT/6,'x'+mult()]);
     var ph=pw.map(function(a){return '<span class="pu" style="--c:'+a[0]+';--p:'+(Math.round(Math.max(0,Math.min(1,a[1]))*20)*5)+'%"><i class="ic" style="background:'+a[0]+'"></i><b>'+a[2]+'</b></span>';}).join('');
     if(ph!==pwHtml){pwHtml=ph;$('pw').innerHTML=ph;}
   }
@@ -1295,7 +1326,7 @@ function frame(t){
     poles.forEach(function(q){q.position.z+=v*dt;if(q.position.z>8)q.position.z-=LOOP;});
     bld.forEach(function(q){q.position.z+=v*dt;if(q.position.z>14)q.position.z-=LOOP;});
     tl.forEach(function(q){q.position.z+=v*dt;if(q.position.z>8)q.position.z-=96;});
-    [trees,palms].forEach(function(arr){arr.forEach(function(q){q.position.z+=v*dt;if(q.position.z>8)q.position.z-=LOOP;});});
+    [trees,palms,stalls].forEach(function(arr){arr.forEach(function(q){q.position.z+=v*dt;if(q.position.z>8)q.position.z-=LOOP;});});
     props.forEach(function(p){p.position.z+=v*dt;if(p.position.z>8){p.position.z-=LOOP;p.position.x=(p.position.x<0?-1:1)*(7.5+Math.random()*14);}});
   }
   for(var i=traffic.length-1;i>=0;i--){
@@ -1334,6 +1365,7 @@ function frame(t){
     if(state==='play'&&Math.abs(pk.position.z)<1.9&&Math.abs(pk.position.x-px)<1.4){
       var ty=pk.userData.t;scene.remove(pk);pickups.splice(m2,1);
       if(ty===0){var full=nitroM>=100;nitroM=Math.min(100,nitroM+25);popup(full?'Nitro full!':nitroM>=100?'Nitro ready!':'Nitro +25%');}
+      else if(ty===3){cmF=2;cmulT=Math.min(15,cmulT+8);}
       else{var was=ty===1?shield>0:magT>0;if(ty===1){shield=Math.min(3,shield+1);shieldM.visible=true;}else magT=Math.min(20,magT+8);if(was)popup('Stacked!');}
       tone(520,0.12,'triangle',0.15,1040);
     }
@@ -1342,7 +1374,7 @@ function frame(t){
     var ol2=oils[o];
     if(state==='play')ol2.position.z+=v*dt;
     if(ol2.position.z>10){scene.remove(ol2);oils.splice(o,1);continue;}
-    if(state==='play'&&!ol2.userData.hit&&Math.abs(ol2.position.z)<2&&Math.abs(ol2.position.x-px)<1.5){ol2.userData.hit=1;if(nitroT<=0){slipT=0.5;tone(200,0.3,'sawtooth',0.12,90);popup('Slippery!');}}
+    if(state==='play'&&!ol2.userData.hit&&Math.abs(ol2.position.z)<2&&Math.abs(ol2.position.x-px)<1.5){ol2.userData.hit=1;if(nitroT<=0){slipT=0.5;if(ol2.userData.cart){tone(140,0.22,'square',0.16,60);popup('Cart!');}else{tone(200,0.3,'sawtooth',0.12,90);popup('Slippery!');}}}
   }
   for(var rr=ramps.length-1;rr>=0;rr--){
     var rp2=ramps[rr];
@@ -1393,15 +1425,15 @@ function frame(t){
   if(state==='ready')camera.position.x+=Math.sin(t/2500)*2.2;
   camera.lookAt(px*0.4,cp.ly-(state==='ready'?2.6:0),cp.lz);
 
-  var b=BIOMES[Math.floor(dist/150)%9],dm=dist%1000,zone=dm>700&&dm<850?1:dm>350&&dm<500?2:0;
+  var b=BIOMES[biomeAt(Math.floor(dist/150))],dm=dist%1000,zone=dm>700&&dm<850?1:dm>350&&dm<500?2:0;
   if(zone!==lastZone){lastZone=zone;if(zone===1)popup('Tunnel!');else if(zone===2)popup('Bridge!');}
   curSky.lerp(bt.set(zone===1?0x15171d:b[0]),dt*0.8);curGround.lerp(bt.set(zone===2?0x3a7ab8:b[1]),dt*0.8);curAmb+=((zone===1?0.3:b[2])-curAmb)*dt*0.8;
   scene.background.copy(curSky);scene.fog.color.copy(curSky);sun.intensity=0.8;sun.color.setRGB(1,0.94,0.78);ground.material.color.copy(curGround);ambient.intensity=curAmb;
   var nf=Math.max(0,Math.min(1,(0.48-curAmb)/0.15)),on=nf>0.05&&state!=='ready';
   rig.position.x=px;
   hglow.forEach(function(g){g.visible=nf>0.1;});
-  var bI=Math.floor(dist/150)%9,city=(bI===5||bI===8)&&zone===0,fo=bI===6&&zone===0,bc=bI===7&&zone===0,neon=bI===8;
-  trees.forEach(function(q){q.visible=fo;});palms.forEach(function(q){q.visible=bc;});sea.visible=bc;
+  var bI=biomeAt(Math.floor(dist/150)),city=(bI===5||bI===8)&&zone===0,fo=bI===6&&zone===0,bc=bI===7&&zone===0,mk=bI===9&&zone===0,neon=bI===8;
+  trees.forEach(function(q){q.visible=fo;});palms.forEach(function(q){q.visible=bc;});sea.visible=bc;stalls.forEach(function(q){q.visible=mk;});
   if(neon!==neonOn){neonOn=neon;bld.forEach(function(q,i){q.material.emissive.setHex(neon?(i%2?0xff2a9a:0x2ae6ff):0);q.material.emissiveIntensity=0.55;});}poles.forEach(function(q,i){q.visible=(nf>0.3||city)&&zone===0&&!(ww>0.3&&i%2);});bld.forEach(function(q){q.visible=city;});
   
   ww+=((NL===4?1:0)-ww)*Math.min(1,dt*2.5);roadM.scale.x=1+0.289*ww;roadM.position.x=1.1*ww;edgeR.position.x=3.7+2.4*ww;
@@ -1409,9 +1441,9 @@ function frame(t){
   tun.visible=zone===1;brg.visible=zone===2;tl.forEach(function(q){q.visible=zone===1;});
   flames.forEach(function(f){f.visible=nitroT>0;var sc=1+Math.random()*1.4;f.scale.z=sc;f.position.z=1.75+sc*0.5;});
   var so=!save.calm&&(nitroT>0||(state==='play'&&speed>48));if(so!==spdOn){spdOn=so;$('spd').style.opacity=so?0.8:0;}
-  rainK+=((Math.floor(dist/150)%9===4?1:0)-rainK)*Math.min(1,dt*0.8);rain.visible=rainK>0.03;rain.material.opacity=rainK*0.75;
+  rainK+=((bI===4?1:0)-rainK)*Math.min(1,dt*0.8);rain.visible=rainK>0.03;rain.material.opacity=rainK*0.75;
   if(rain.visible){for(var ri=0;ri<RN;ri++){rpos[ri*3+1]-=38*dt;if(rpos[ri*3+1]<0){rpos[ri*3+1]=14;rpos[ri*3]=(Math.random()-0.5)*30;rpos[ri*3+2]=-Math.random()*40+6;}}rainG.attributes.position.needsUpdate=true;}
-  var snow=Math.floor(dist/150)%9===3;props.forEach(function(q){q.userData.cap.visible=snow;q.visible=!city&&!fo&&!bc&&zone===0;});
+  var snow=bI===3;props.forEach(function(q){q.userData.cap.visible=snow;q.visible=!city&&!fo&&!bc&&!mk&&zone===0;});
   lamps.forEach(function(l){l.intensity=on?nf*1.8:0;});
   beams.forEach(function(b){b.visible=on;b.material.opacity=nf*0.32;});
   camera.fov+=((nitroT>0?80:60)-camera.fov)*Math.min(1,dt*5);camera.updateProjectionMatrix();
