@@ -29,6 +29,7 @@ h1{font-size:24px;letter-spacing:1px;line-height:1.4;margin:0 0 14px;color:#ffd9
 .sechd{font-size:10px;color:#ffd95a;letter-spacing:1px;margin:16px 0 6px;padding-bottom:4px;border-bottom:2px solid rgba(255,217,90,.3)}
 .sechd:first-of-type{margin-top:0}
 .empty{text-align:center;padding:20px 10px;opacity:.85}.empty b{display:block;font-size:32px;margin-bottom:10px;filter:grayscale(.3)}
+#gar{background-image:linear-gradient(rgba(10,14,22,.35) 0 54px,transparent 54px),repeating-linear-gradient(0deg,rgba(0,0,0,.14) 0 2px,transparent 2px 34px),repeating-linear-gradient(90deg,rgba(0,0,0,.1) 0 2px,transparent 2px 34px);background-color:var(--panel);background-attachment:local}
 body.chud #hud{font-size:7px!important;gap:4px!important;padding:4px 6px!important}
 body.chud #hud .cb{padding:2px 4px!important}
 body.chud #pw{font-size:7px!important;gap:4px!important;top:44px!important}
@@ -167,7 +168,7 @@ button:disabled{opacity:.6;cursor:default}#ov{overflow:auto;touch-action:pan-y;-
       <button id="spbtn"><b>🎡</b>Spin</button><button id="howbtn"><b>❓</b>Help</button><button id="frbtn"><b>🤝</b>Friends</button><button id="rcbtn"><b>🏁</b>Race</button><button id="nwbtn"><b>📰</b>News</button><button id="setbtn"><b>⚙️</b>Settings</button>
     </div>
     <div id="menuw" style="margin-top:14px;display:none"><button id="menu">Main menu</button></div>
-    <p id="ver" style="font-size:8px;opacity:.7;margin:14px 0 0">v4.0.0</p>
+    <p id="ver" style="font-size:8px;opacity:.7;margin:14px 0 0">v4.1.0</p>
   </div><div class="box" id="gar" style="display:none"></div><div class="box" id="set" style="display:none"></div><div class="box" id="mis" style="display:none"></div><div class="box" id="how" style="display:none"></div><div class="box" id="stp" style="display:none"></div><div class="box" id="spn" style="display:none"></div><div class="box" id="lb" style="display:none"></div><div class="box" id="rcp" style="display:none"></div><div class="box" id="frp" style="display:none"></div><div class="box" id="chp" style="display:none"></div><div class="box" id="nwp" style="display:none"></div><div class="box" id="wel" style="display:none"></div></div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -356,13 +357,14 @@ function glow(x,y,z,w,h,c){var m=box(player,w,h,0.05,x,y,z,c);m.material=new THR
 });
 var flames=[-0.5,0.5].map(function(x){var f=box(player,0.35,0.3,1,x,0.6,2.3,0xff8a1f);f.material=new THREE.MeshBasicMaterial({color:0xff8a1f});f.visible=false;return f;});
 
-var traffic=[],coinsArr=[],pickups=[],coinAcc=0,nitroT=0,nitroM=0,nitroUiP=-1,nitroUiV=null,magT=0,shield=0,coinCount=0,muted=!!save.mute,crashFly=0,slipT=0,oils=[],debris=[],nextBoss=500,runNM=0,rainK=0,jumpT=0,ramps=[],comboN=0,comboT=0,comboFxT=0,lastM=0,fpsAcc=0,fpsN=0,spdOn=false,lastZone=0,revCount=0,rockT=0,lastEv=0,runT=0,wd=0,rec=[],lastRec=0,gh=null,pwHtml='',neonOn=false,graceT=0,smT=0,smOn=false,tilt=0,gasHold=0,brkHold=0,gasOn=false,brkOn=false,gasVis=false,carSeq=0,SPZ=-115,spdT=0,spdF=1,agT=0,agF=1,dmF=1,cmF=1,echoN=0,nmT=0,pwT=0,cmulT=0,dmulT=0,autoT=0,autoC=0,phx=0,xpMul=1,jb=0,calmT=0,slowT=0,skCd=[0,0,0],skSig='',skOn=false,skT=0,hitCar=null,hcv=0,hcy=0,czMsg=false,resuming=false,oppW=null,oppX=0,rnd=Math.random,wd=0,raceT=0,rowK=0,nextRowT=0,lastXp=0,lbMode=0,lastFree=1,bossPending=false,bossJust=false,ren=false,ww=0,holdT=0,nwMsg=false,dailyMsg='';
-var BIOMES=[[0x7fd1e8,0xe8c27a,0.65],[0xf08a5d,0xd9a066,0.55],[0x1b2440,0x3b4a5a,0.3],[0xbfd8e8,0xf2f6fa,0.75],[0x56636f,0x8c9170,0.42],[0xa9c4d8,0x6b7078,0.62],[0x8fd1a0,0x4f8f4a,0.62],[0x8fe0f0,0xf0dca0,0.7],[0x1a0f33,0x2a2440,0.28],[0xf5d28a,0xc2a378,0.6]];
+var traffic=[],coinsArr=[],pickups=[],coinAcc=0,nitroT=0,nitroM=0,nitroUiP=-1,nitroUiV=null,magT=0,shield=0,coinCount=0,muted=!!save.mute,crashFly=0,slipT=0,oils=[],debris=[],nextBoss=500,runNM=0,rainK=0,jumpT=0,ramps=[],comboN=0,comboT=0,comboFxT=0,swReady=false,lastM=0,fpsAcc=0,fpsN=0,spdOn=false,lastZone=0,revCount=0,rockT=0,lastEv=0,runT=0,wd=0,rec=[],lastRec=0,gh=null,pwHtml='',neonOn=false,graceT=0,smT=0,smOn=false,tilt=0,gasHold=0,brkHold=0,gasOn=false,brkOn=false,gasVis=false,carSeq=0,SPZ=-115,spdT=0,spdF=1,agT=0,agF=1,dmF=1,cmF=1,echoN=0,nmT=0,pwT=0,cmulT=0,dmulT=0,autoT=0,autoC=0,phx=0,xpMul=1,jb=0,calmT=0,slowT=0,skCd=[0,0,0],skSig='',skOn=false,skT=0,hitCar=null,hcv=0,hcy=0,czMsg=false,resuming=false,oppW=null,oppX=0,rnd=Math.random,wd=0,raceT=0,rowK=0,nextRowT=0,lastXp=0,lbMode=0,lastFree=1,bossPending=false,bossJust=false,ren=false,ww=0,holdT=0,nwMsg=false,dailyMsg='';
+var BIOMES=[[0x7fd1e8,0xe8c27a,0.65],[0xf08a5d,0xd9a066,0.55],[0x1b2440,0x3b4a5a,0.3],[0xbfd8e8,0xf2f6fa,0.75],[0x56636f,0x8c9170,0.42],[0xa9c4d8,0x6b7078,0.62],[0x8fd1a0,0x4f8f4a,0.62],[0x8fe0f0,0xf0dca0,0.7],[0x1a0f33,0x2a2440,0.28],[0xf5d28a,0xc2a378,0.6],[0x0a0014,0xff2fd1,0.5]];
 var bSeq=[0],bSeed=1,pendSeed=0;
 function biomeAt(seg){
+  var pool=save.secret1?BIOMES.length:BIOMES.length-1;
   while(bSeq.length<=seg){
-    var n=bSeq.length,h=Math.sin(n*12.9898+bSeed*78.233)*43758.5453,idx=Math.floor((h-Math.floor(h))*BIOMES.length);
-    if(idx===bSeq[n-1])idx=(idx+1)%BIOMES.length;
+    var n=bSeq.length,h=Math.sin(n*12.9898+bSeed*78.233)*43758.5453,idx=Math.floor((h-Math.floor(h))*pool);
+    if(idx===bSeq[n-1])idx=(idx+1)%pool;
     bSeq.push(idx);
   }
   return bSeq[seg];
@@ -387,6 +389,12 @@ var state='ready',lane=1,px=0,speed=20,dist=0,spawnT=0,shake=0,last=0,best=0;
 try{best=+localStorage.getItem('pixhwy-best')||0;}catch(e){}
 var $=function(id){return document.getElementById(id);};
 $('best').textContent=kmb(best);updateBank();updateBank();
+if(save.dnotif&&typeof Notification!=='undefined'&&Notification.permission==='granted'){
+  setTimeout(function(){
+    if(!save.daily||save.daily.day===mday())return;
+    try{navigator.serviceWorker.ready.then(function(reg){reg.showNotification('Road Rush',{body:"Your daily deal and streak are waiting — come back for today's run!",icon:'icon-192.png'});});}catch(e){}
+  },72000000);
+}
 
 function reset(){
   if(typeof spec!=='undefined'&&!spec.on){Object.keys(spec.m).forEach(function(k){scene.remove(spec.m[k]);});spec.m={};if(spec.car!==-1){spec.car=-1;setCar();}}
@@ -394,6 +402,7 @@ function reset(){
   coinsArr.forEach(function(t){scene.remove(t);});coinsArr.length=0;pickups.forEach(function(t){scene.remove(t);});pickups.length=0;nitroT=0;nitroM=0;magT=0;shield=0;shieldM.visible=false;player.rotation.z=0;player.position.y=0;crashFly=0;slipT=0;nextBoss=500;runNM=0;jumpT=0;comboN=0;hitCar=null;spdT=0;agT=0;nmT=0;pwT=0;echoN=0;cmulT=0;dmulT=0;autoT=0;phx=0;xpMul=1;jb=0;calmT=0;slowT=0;skCd=[0,0,0];revCount=0;rockT=0;lastEv=0;graceT=0;player.visible=true;lastFree=1;bossPending=false;bossJust=false;puffs.forEach(function(t){scene.remove(t.m);});puffs.length=0;ramps.forEach(function(t){scene.remove(t);});ramps.length=0;oils.forEach(function(t){scene.remove(t);});oils.length=0;debris.forEach(function(t){scene.remove(t.m);});debris.length=0;coinCount=0;$('coins').textContent='0';
   lane=1;px=0;speed=32;dist=0;spawnT=20;shake=0;
   bSeq=[0];if(pendSeed){bSeed=pendSeed;pendSeed=0;}else bSeed=1+Math.random()*9999;
+  swReady=false;
 }
 function start(){
   setPres('solo');$('rci').textContent='';audioInit();wake();showGarage(false);reset();player.rotation.y=0;shield=(S.shield?1:0)+(save.pre==='s'?1:0);shieldM.visible=shield>0;if(save.pre==='n')nitroT=5;save.pre=null;state='play';$('ov').style.display='none';$('pause').style.visibility='visible';
@@ -408,7 +417,8 @@ function crash(){
   if(isBest){best=m;try{localStorage.setItem('pixhwy-best',best);}catch(e){}}
   $('best').textContent=kmb(best);updateBank();
   $('title').textContent='Crashed!';
-  $('msg').innerHTML='<span class="cb"><i class="ic ic-dist"></i><b>'+kmb(m)+' m</b></span> <span class="cb"><i class="coin"></i><b>'+kmb(coinCount)+'</b></span><br><small>+'+kmb(lastXp)+' XP'+(isBest?' · New best!':'')+(lvMsg?'<br>'+lvMsg:'')+'</small><br><small>Road code: '+Math.round(bSeed)+' · share it so a friend can try this same road</small>';
+  var gsc=m/20+runNM*8+(save.st.bc||1)*15-revCount*40,gr=gsc>=180?'S':gsc>=120?'A':gsc>=70?'B':gsc>=30?'C':'D';
+  $('msg').innerHTML='<span class="cb"><i class="ic ic-dist"></i><b>'+kmb(m)+' m</b></span> <span class="cb"><i class="coin"></i><b>'+kmb(coinCount)+'</b></span> <span class="cb" style="color:'+(gr==='S'?'#ffd95a':gr==='A'?'#2fb37a':gr==='B'?'#66e0ff':gr==='C'?'#f2b632':'#ff5a3c')+'"><b>'+gr+'</b></span><br><small>+'+kmb(lastXp)+' XP'+(isBest?' · New best!':'')+(lvMsg?'<br>'+lvMsg:'')+'</small><br><small>Road code: '+Math.round(bSeed)+' · share it so a friend can try this same road</small>';
   $('go').textContent='RETRY';
   setTimeout(function(){if(state==='over')showOv('over');},700);
 }
@@ -477,8 +487,8 @@ function boss(){
     var c=makeTruck();c.userData={hw:1.9,hl:4.3,sp:9,minD:99,id:++carSeq,done:false};markCast(c);addShadow(c,2.3,4.4);c.position.set(LANES[l2],0,z);scene.add(c);traffic.push(c);
   }
 }
-var ACH=[['Road warrior','Drive 5,000 m in total',function(){return (save.tot||0)>=5000;},80],['Daredevil','10 close calls in one run',function(){return runNM>=10;},60],['Rich driver','Bank 500 coins',function(){return save.bank>=500;},50],['Long haul','Drive 1,500 m in one run',function(){return dist>=1500;},70],['Car collector','Own 4 cars',function(){return save.own.length>=4;},80],['Flawless run','Drive 2,000 m in one run without using a revive',function(){return dist>=2000&&revCount===0;},100]];
-function chk(){if(!save.ach)save.ach={};var w=wk();if(!save.wk.d&&w[1]()){save.wk.d=1;save.bank+=150;persist();updateBank();popup('Weekly done! +'+kmb(150));}ACH.forEach(function(a,i){if(!save.ach[i]&&a[2]()){save.ach[i]=1;save.bank+=a[3];persist();updateBank();popup('Badge: '+a[0]+' +'+kmb(a[3]));}});}
+var ACH=[['Road warrior','Drive 5,000 m in total',function(){return (save.tot||0)>=5000;},80],['Daredevil','10 close calls in one run',function(){return runNM>=10;},60],['Rich driver','Bank 500 coins',function(){return save.bank>=500;},50],['Long haul','Drive 1,500 m in one run',function(){return dist>=1500;},70],['Car collector','Own 4 cars',function(){return save.own.length>=4;},80],['Flawless run','Drive 2,000 m in one run without using a revive',function(){return dist>=2000&&revCount===0;},100],['???','Keep driving and see what you find',function(){return dist>=3000;},150]];
+function chk(){if(!save.ach)save.ach={};var w=wk();if(!save.wk.d&&w[1]()){save.wk.d=1;save.bank+=150;persist();updateBank();popup('Weekly done! +'+kmb(150));}ACH.forEach(function(a,i){if(!save.ach[i]&&a[2]()){save.ach[i]=1;save.bank+=a[3];persist();updateBank();popup('Badge: '+a[0]+' +'+kmb(a[3]));if(i===6){save.secret1=1;persist();setTimeout(function(){popup('A hidden road has opened up...');},900);}}});}
 
 var CAMP=[{y:3.4,z:7.5,fx:0.55,ly:1.1,lz:-9},{y:8,z:5,fx:0.4,ly:0,lz:-6},{y:1.7,z:0.3,fx:0.9,ly:1.2,lz:-16}];
 function rcost(){return 30*Math.pow(2,revCount);}
@@ -611,7 +621,7 @@ function postWeekly(m){
   var prev=save.w.top;save.w.top=m;persist();
   apiR('weekly/'+w+'/'+pid0(),'PUT',{n:save.pname,d:m}).catch(function(){save.w.top=prev;persist();});
 }
-var VER='4.0.0',EMO=['👍','😂','😮'],race={on:false,dead:false,om:{},rm:0,e:0,et:0,opt:{mode:'last',goal:1000,pu:1,tr:1,eq:0,sp:0}};
+var VER='4.1.0',EMO=['👍','😂','😮'],race={on:false,dead:false,om:{},rm:0,e:0,et:0,opt:{mode:'last',goal:1000,pu:1,tr:1,eq:0,sp:0}};
 var oppMs=[0x66ccff,0x66ff99,0xffaa55].map(function(c){var m=makeBase(c);m.traverse(function(o){if(o.material){o.material=o.material.clone();o.material.transparent=true;o.material.opacity=0.45;}});m.visible=false;scene.add(m);return m;});
 function mkRng(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 function rowPos(k){
@@ -660,7 +670,7 @@ function api(path,method,body){return apiR('rooms/'+path,method,body);}
 function pid0(){return AUTH.uid||'@me';}
 function rcMe(){return {n:save.pname||'Player',d:Math.floor(dist),x:Math.round(px*10)/10,w:Math.round(wd*10)/10,a:race.dead?0:1,e:race.e,et:race.et,sp:Math.round(speed*(nitroT>0?1.6:1)),fin:race.fin?1:0,ft:Math.round((race.ft||0)*10)/10};}
 function rcClean(){clearInterval(race.iv);clearInterval(race.cd);race.iv=race.cd=null;}
-function resetRace(){rcClean();race.on=false;race.dead=false;race.om={};race.starting=false;$('cd').style.display='none';$('rci').textContent='';$('emo').style.display='none';oppMs.forEach(function(g){g.visible=false;});setCar();}
+function resetRace(){rcClean();race.on=false;race.dead=false;race.om={};race.starting=false;race.wPaid=0;$('cd').style.display='none';$('rci').textContent='';$('emo').style.display='none';oppMs.forEach(function(g){g.visible=false;});setCar();}
 function leaveRace(){var c=race.code;resetRace();setPres('menu');race.code=null;if(c){(race.host?api(c,'DELETE'):api(c+'/g/'+pid0(),'DELETE')).catch(function(){});}}
 function showRace(v,msg){
   if(v==='lobby'&&!race.code)v='home';
@@ -696,6 +706,7 @@ function countdown(){
 function startRace(){
   var pre=save.pre,s0=S;S={coin:1,shield:0,agi:11,nar:0,acc:race.opt.eq?0.035:s0.acc,top:race.opt.eq?85:s0.top};start();save.pre=pre;setPres('race',race.code);
   race.on=true;race.dead=false;race.om={};race.P=null;race.fin=0;race.ft=0;race.saved=0;gasOn=false;brkOn=false;race.launched=false;if(race.opt.sp)speed=0;raceT=0;rowK=0;nextRowT=0.3;wd=0;lastFree=1;
+  if(race.opt.mode==='sprint'&&race.opt.w>0&&!race.wPaid){race.wPaid=1;save.bank=Math.max(0,save.bank-race.opt.w);persist();updateBank();}
   $('pause').style.visibility='hidden';$('emo').style.display='flex';
   var pb=false,gb=false;
   race.iv=setInterval(function(){
@@ -737,11 +748,11 @@ function raceCrash(){
   race.dead=true;race.me=Math.floor(dist);api(race.code+'/g/'+pid0(),'PUT',rcMe()).catch(function(){});
   setTimeout(function(){showRace('res');rcRes();},900);
 }
-function optTxt(o){return (o.mode==='sprint'?'Sprint to '+o.goal+' m':'Last driver driving')+' · Power-ups '+(o.pu?'on':'off')+' · Traffic '+['light','normal','heavy'][o.tr]+' · '+(o.eq?'Equal cars':'Own cars')+' · '+(o.sp?'Manual speed':'Auto speed');}
+function optTxt(o){return (o.mode==='sprint'?'Sprint to '+o.goal+' m':'Last driver driving')+' · Power-ups '+(o.pu?'on':'off')+' · Traffic '+['light','normal','heavy'][o.tr]+' · '+(o.eq?'Equal cars':'Own cars')+' · '+(o.sp?'Manual speed':'Auto speed')+(o.w?' · Wager '+o.w+' coins, winner takes the pot':'');}
 function renderOpt(){
   var el=$('rcopt');if(!el)return;var o=race.opt;
   if(!race.host){el.innerHTML='<p>'+optTxt(o)+'</p>';return;}
-  el.innerHTML='<div class="chq"><button data-o="m">'+(o.mode==='sprint'?'Sprint':'Last driver')+'</button>'+(o.mode==='sprint'?'<button data-o="g">'+o.goal+' m</button>':'')+'<button data-o="p">Power-ups '+(o.pu?'on':'off')+'</button><button data-o="t">Traffic '+['light','normal','heavy'][o.tr]+'</button><button data-o="e">'+(o.eq?'Equal cars':'Own cars')+'</button><button data-o="s">'+(o.sp?'Manual speed':'Auto speed')+'</button></div>';
+  el.innerHTML='<div class="chq"><button data-o="m">'+(o.mode==='sprint'?'Sprint':'Last driver')+'</button>'+(o.mode==='sprint'?'<button data-o="g">'+o.goal+' m</button>':'')+'<button data-o="p">Power-ups '+(o.pu?'on':'off')+'</button><button data-o="t">Traffic '+['light','normal','heavy'][o.tr]+'</button><button data-o="e">'+(o.eq?'Equal cars':'Own cars')+'</button><button data-o="s">'+(o.sp?'Manual speed':'Auto speed')+'</button>'+(o.mode==='sprint'?'<button data-o="w">'+(o.w?'Wager '+o.w:'No wager')+'</button>':'')+'</div>'+(o.mode==='sprint'&&o.w?'<p style="font-size:8px;opacity:.75;margin:6px 0 0">Winner takes the pot. Everyone pays '+o.w+' coins when the race starts.</p>':'');
 }
 function raceStop(){
   if(race.dead)return;state='over';$('pause').style.visibility='hidden';$('emo').style.display='none';
@@ -751,6 +762,10 @@ function raceStop(){
 function raceFinish(){
   if(race.dead)return;race.fin=1;race.ft=raceT;tone(660,0.2,'triangle',0.2,990);vib(60);
   state='over';$('pause').style.visibility='hidden';$('emo').style.display='none';
+  if(race.opt.w>0&&race.wPaid){
+    var iWon=!Object.keys(race.om).some(function(k){return race.om[k].fin;});
+    if(iWon){var pot=race.opt.w*(Object.keys(race.om).length+1);save.bank+=pot;persist();updateBank();popup('Pink slip win! +'+kmb(pot)+' coins');}
+  }
   race.dead=true;race.me=race.opt.goal;api(race.code+'/g/'+pid0(),'PUT',rcMe()).catch(function(){});
   setTimeout(function(){showRace('res');rcRes();},700);
 }
@@ -763,7 +778,8 @@ $('rcp').addEventListener('click',function(e){
   if(id==='rcmenu'){leaveRace();toMenu();return;}
   if(id==='rcleave'){leaveRace();showRace('home');return;}
   if(b.dataset.o){var o=race.opt,k=b.dataset.o,GL=[500,1000,2000,3000,5000];
-    if(k==='m')o.mode=o.mode==='sprint'?'last':'sprint';else if(k==='g')o.goal=GL[(GL.indexOf(o.goal)+1)%GL.length];else if(k==='p')o.pu=o.pu?0:1;else if(k==='t')o.tr=(o.tr+1)%3;else if(k==='e')o.eq=o.eq?0:1;else if(k==='s')o.sp=o.sp?0:1;
+    var WL=[0,10,25,50];
+    if(k==='m')o.mode=o.mode==='sprint'?'last':'sprint';else if(k==='g')o.goal=GL[(GL.indexOf(o.goal)+1)%GL.length];else if(k==='p')o.pu=o.pu?0:1;else if(k==='t')o.tr=(o.tr+1)%3;else if(k==='e')o.eq=o.eq?0:1;else if(k==='s')o.sp=o.sp?0:1;else if(k==='w')o.w=WL[(WL.indexOf(o.w||0)+1)%WL.length];
     api(race.code+'/opt','PUT',o).catch(function(){});renderOpt();return;}
   if(id==='rcagain'){var sd=Math.floor(Math.random()*1e9),rm=Date.now();race.seed=sd;
     api(race.code+'/st','PUT','wait').then(function(){return api(race.code+'/seed','PUT',sd);}).then(function(){return api(race.code+'/rm','PUT',rm);}).then(function(){race.rm=rm;toLobby();}).catch(function(){});return;}
@@ -946,7 +962,8 @@ $('chp').addEventListener('click',function(e){
   if(b.dataset.q!==undefined)sendChat(QP[+b.dataset.q]);
 });
 $('chp').addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.id==='chi'){e.preventDefault();sendChat($('chi').value);}});
-var NEWSV='4.0.0',NEWS=[
+var NEWSV='4.1.0',NEWS=[
+{v:'4.1.0',t:['New: end-of-run letter grade, a free Second Wind save once per run after a x5 combo, a hidden badge for the curious, pink slip wager races (Sprint mode, host-set), a Shop showroom backdrop, and an opt-in daily reminder in Settings.']},
 {v:'4.0.0',t:['Road Rush 4.0! Removed the letters from pickup orbs — back to plain colored orbs. This version also rolls up everything recent: the nitro meter, Market biome, random biome order, per-car upgrades, license plates, gifting, road codes, and the Shop/Missions/Leaderboard/Friends UI refresh.']},
 {v:'3.35.0',t:['UI pass: Missions, Badges, Leaderboard and Friends now use the same card style as the Shop. Settings is grouped into sections. New Compact HUD option shrinks the score and nitro bar for more road. Pickups now show a letter (N/S/M/2X) so they are readable without relying on color. Shop tabs support swiping left/right. A new skippable splash screen plays on first load each session.']},
 {v:'3.34.0',t:['Big combos now kick up colored trail puffs behind your car. The Shop Cars tab has a spinning preview of your current car. New Road code: every run shows a code on the game-over screen you can share, and friends can enter it in Settings to drive the exact same road. Gift 50 coins to a friend once every 12 hours from the Friends list. New Flawless run badge for 2,000 m with no revives used.']},
@@ -1224,7 +1241,7 @@ function bonus(n){coinCount+=n;save.bank+=n;persist();updateBank();$('coins').te
 function showHow(on){
   $('how').style.display=on?'block':'none';document.querySelector('#ov .box').style.display=on?'none':'block';
   if(!on)return;save.seen=1;persist();
-  $('how').innerHTML='<h1>How to play</h1><p>Tap the left or right side to change lanes, or swipe if you chose it in Settings.</p><p>On a computer use the arrow keys or A and D, P to pause, and Enter to start.</p><p>Collect coins. Orange = nitro, blue = shield, purple = magnet, yellow = 2x coins for a while.</p><p>Nitro pickups fill your nitro meter in the bottom right. It stays full until you tap it (or press N) to fire off a boost — the fuller the meter, the longer the boost lasts.</p><p>Squeeze past traffic for close calls and a combo. Drive onto ramps to jump over cars. Avoid oil.</p><button id="hback">Back</button>';
+  $('how').innerHTML='<h1>How to play</h1><p>Tap the left or right side to change lanes, or swipe if you chose it in Settings.</p><p>On a computer use the arrow keys or A and D, P to pause, and Enter to start.</p><p>Collect coins. Orange = nitro, blue = shield, purple = magnet, yellow = 2x coins for a while.</p><p>Nitro pickups fill your nitro meter in the bottom right. It stays full until you tap it (or press N) to fire off a boost — the fuller the meter, the longer the boost lasts.</p><p>Squeeze past traffic for close calls and a combo. Drive onto ramps to jump over cars. Avoid oil.</p><p>Reach a x5 combo and you earn a free Second Wind — your next crash that run gets a brief save instead of ending it.</p><button id="hback">Back</button>';
 }
 $('howbtn').addEventListener('click',function(){showHow(true);});
 $('how').addEventListener('click',function(e){if(e.target.id==='hback')showHow(false);});
@@ -1248,9 +1265,9 @@ function showMis(on){
   h+='<p>Badges</p>';ACH.forEach(function(a,i){var got=save.ach&&save.ach[i];h+='<div class="shopcard'+(got?' cur':'')+'">'+(got?'<b class="ribbon owned">✓</b>':'')+'<div class="row"><span>'+a[0]+'<br><small>'+a[1]+'</small></span></div></div>';});
   $('mis').innerHTML=h+'<button id="mback">Back</button>';
 }
-var SETI=[['chud','Compact HUD','Shrinks the score, nitro bar and power-up icons during play for more road to see.'],['snd','Sound','Turns sound effects like coin pings and crashes on or off.'],['gfx','Graphics','Lower sharpness runs smoother on slow phones. Higher looks crisper.'],['ctl','Steering','Tap the left or right side of the screen, or swipe to change lanes.'],['cam','Camera','Choose the view behind the car, a high view, or a hood view.'],['big','Big buttons','Makes buttons and text larger and easier to tap.'],['hc','High contrast','Boosts contrast so the game is easier to see.'],['calm','Calm mode','Reduces screen shake, flashes and speed lines.'],['vib','Vibration','Buzzes your phone on crashes, coins and close calls.'],['aq','Auto quality','Lowers sharpness by itself if the game starts to lag.'],['theme','Theme','Pick a color theme. Night unlocks at level 3 and Retro at level 6.'],['sm','Speedometer','Shows your speed in km/h at the bottom of the screen.'],['shd','Shadows','Soft is light and fast. Real draws proper shadows from the sun but needs a stronger phone.']];
-function setVal(k){var G=['Low','Medium','High'];return k==='chud'?(save.chud?'On':'Off'):k==='snd'?(muted?'Off':'On'):k==='gfx'?G[save.gfx==null?2:save.gfx]:k==='ctl'?['Tap','Swipe'][save.ctl||0]:k==='cam'?['Behind','High','Hood'][save.cam||0]:k==='big'?(save.big?'On':'Off'):k==='hc'?(save.hc?'On':'Off'):k==='calm'?(save.calm?'On':'Off'):k==='vib'?(save.novib?'Off':'On'):k==='shd'?['Off','Soft','Real'][save.shd==null?1:save.shd]:k==='sm'?(save.nosm?'Off':'On'):k==='theme'?['Classic','Night','Retro'][save.theme||0]:(save.noaq?'Off':'On');}
-var SETSEC=[['Display',['gfx','theme','sm','shd','big','hc','calm','chud']],['Controls',['ctl','cam']],['Audio',['snd','vib']],['Other',['aq']]];
+var SETI=[['dnotif','Daily reminder','Asks your browser for permission to remind you about your streak and daily deal. Only works while this tab or app stays open in the background — it cannot wake up a fully closed browser.'],['chud','Compact HUD','Shrinks the score, nitro bar and power-up icons during play for more road to see.'],['snd','Sound','Turns sound effects like coin pings and crashes on or off.'],['gfx','Graphics','Lower sharpness runs smoother on slow phones. Higher looks crisper.'],['ctl','Steering','Tap the left or right side of the screen, or swipe to change lanes.'],['cam','Camera','Choose the view behind the car, a high view, or a hood view.'],['big','Big buttons','Makes buttons and text larger and easier to tap.'],['hc','High contrast','Boosts contrast so the game is easier to see.'],['calm','Calm mode','Reduces screen shake, flashes and speed lines.'],['vib','Vibration','Buzzes your phone on crashes, coins and close calls.'],['aq','Auto quality','Lowers sharpness by itself if the game starts to lag.'],['theme','Theme','Pick a color theme. Night unlocks at level 3 and Retro at level 6.'],['sm','Speedometer','Shows your speed in km/h at the bottom of the screen.'],['shd','Shadows','Soft is light and fast. Real draws proper shadows from the sun but needs a stronger phone.']];
+function setVal(k){var G=['Low','Medium','High'];return k==='dnotif'?((save.dnotif&&typeof Notification!=='undefined'&&Notification.permission==='granted')?'On':'Off'):k==='chud'?(save.chud?'On':'Off'):k==='snd'?(muted?'Off':'On'):k==='gfx'?G[save.gfx==null?2:save.gfx]:k==='ctl'?['Tap','Swipe'][save.ctl||0]:k==='cam'?['Behind','High','Hood'][save.cam||0]:k==='big'?(save.big?'On':'Off'):k==='hc'?(save.hc?'On':'Off'):k==='calm'?(save.calm?'On':'Off'):k==='vib'?(save.novib?'Off':'On'):k==='shd'?['Off','Soft','Real'][save.shd==null?1:save.shd]:k==='sm'?(save.nosm?'Off':'On'):k==='theme'?['Classic','Night','Retro'][save.theme||0]:(save.noaq?'Off':'On');}
+var SETSEC=[['Display',['gfx','theme','sm','shd','big','hc','calm','chud']],['Controls',['ctl','cam']],['Audio',['snd','vib']],['Other',['aq','dnotif']]];
 function showSet(on){
   $('set').style.display=on?'block':'none';document.querySelector('#ov .box').style.display=on?'none':'block';
   if(!on)return;
@@ -1287,6 +1304,16 @@ $('set').addEventListener('click',function(e){
   else if(k==='big'){save.big=!save.big;a11y();}
   else if(k==='hc'){save.hc=!save.hc;a11y();}
   else if(k==='chud'){save.chud=!save.chud;a11y();}
+  else if(k==='dnotif'){
+    if(typeof Notification==='undefined'){alert('Notifications are not supported in this browser.');return;}
+    if(save.dnotif&&Notification.permission==='granted'){save.dnotif=false;persist();showSet(true);return;}
+    Notification.requestPermission().then(function(perm){
+      if(perm==='granted'){save.dnotif=true;persist();try{navigator.serviceWorker.ready.then(function(reg){reg.showNotification('Road Rush',{body:"You're set! We'll remind you about your streak and daily deal while this tab stays open in the background.",icon:'icon-192.png'});});}catch(e){}}
+      else{save.dnotif=false;persist();alert('Notifications are blocked. You can allow them in your browser site settings.');}
+      showSet(true);
+    });
+    return;
+  }
   else if(k==='calm')save.calm=!save.calm;
   else if(k==='theme'){var nx=((save.theme||0)+1)%3;while(nx>0&&lvl().l<[0,3,6][nx])nx=(nx+1)%3;save.theme=nx;a11y();}
   else if(k==='shd')save.shd=((save.shd==null?1:save.shd)+1)%3;
@@ -1296,9 +1323,10 @@ $('set').addEventListener('click',function(e){
   persist();showSet(true);
 });
 function nearMiss(){
-  comboN++;comboT=6+up().g;var b=2*mult()*(nmT>0?3:1);sti('x',0);save.st.bc=Math.max(save.st.bc||0,mult());coinCount+=b;save.bank+=b;persist();updateBank();$('coins').textContent=kmb(coinCount);dist+=5;
+  comboN++;comboT=6+up().g;var b=2*mult()*(nmT>0?3:1);sti('x',0);save.st.bc=Math.max(save.st.bc||0,mult());var swJust=mult()>=5&&!swReady;if(swJust)swReady=true;coinCount+=b;save.bank+=b;persist();updateBank();$('coins').textContent=kmb(coinCount);dist+=5;
   tone(660,0.1,'square',0.12,990);
   popup('Close call! +'+b);skid();madd(2,1);runNM++;sti('n');vib(25);chk();
+  if(swJust)setTimeout(function(){if(swReady)popup('Second wind earned!');},900);
 }
 var garTab='cars';
 function showGarage(on){
@@ -1464,7 +1492,7 @@ function frame(t){
       else if(c.position.z>=u.hl&&!u.done){u.done=true;if(u.minD>=hwe&&u.minD<Math.min(hwe+(pwT>0?1.0:0.4),2.15))nearMiss();}
     }
     if(state==='play'&&jumpT<=0&&(!u.fall||c.position.y<1.5)&&Math.abs(c.position.z)<u.hl&&Math.abs(c.position.x-px)<hwe){
-      if(nitroT>0||graceT>0||shield>0||phx>0){if(nitroT<=0&&graceT<=0){if(shield>0){shield--;shieldM.visible=shield>0;}else{phx=0;nitroT=2.5;graceT=3;popup('Second chance!');}}scene.remove(c);traffic.splice(i,1);shake=0.6;tone(300,0.25,'square',0.2,60);continue;}
+      if(nitroT>0||graceT>0||shield>0||phx>0||swReady){if(nitroT<=0&&graceT<=0){if(shield>0){shield--;shieldM.visible=shield>0;}else if(swReady){swReady=false;phx=0;nitroT=2.5;graceT=3;popup('Second wind!');}else{phx=0;nitroT=2.5;graceT=3;popup('Second chance!');}}scene.remove(c);traffic.splice(i,1);shake=0.6;tone(300,0.25,'square',0.2,60);continue;}
       hitCar=c;hcv=(c.position.x>=px?1:-1)*11;hcy=5;crash();
     }
   }
