@@ -178,7 +178,7 @@ button:disabled{opacity:.6;cursor:default}#ov{overflow:auto;touch-action:pan-y;-
       <button id="spbtn"><b>🎡</b>Spin</button><button id="howbtn"><b>❓</b>Help</button><button id="frbtn"><b>🤝</b>Friends</button><button id="rcbtn"><b>🏁</b>Race</button><button id="nwbtn"><b>📰</b>News</button><button id="setbtn"><b>⚙️</b>Settings</button>
     </div>
     <div id="menuw" style="margin-top:14px;display:none"><button id="menu">Main menu</button></div>
-    <p id="ver" style="font-size:8px;opacity:.7;margin:14px 0 0">v4.6.0</p>
+    <p id="ver" style="font-size:8px;opacity:.7;margin:14px 0 0">v4.7.2</p>
   </div><div class="box" id="gar" style="display:none"></div><div class="box" id="set" style="display:none"></div><div class="box" id="mis" style="display:none"></div><div class="box" id="how" style="display:none"></div><div class="box" id="stp" style="display:none"></div><div class="box" id="spn" style="display:none"></div><div class="box" id="lb" style="display:none"></div><div class="box" id="rcp" style="display:none"></div><div class="box" id="frp" style="display:none"></div><div class="box" id="chp" style="display:none"></div><div class="box" id="nwp" style="display:none"></div><div class="box" id="wel" style="display:none"></div></div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -640,7 +640,7 @@ function postWeekly(m){
   var prev=save.w.top;save.w.top=m;persist();
   apiR('weekly/'+w+'/'+pid0(),'PUT',{n:save.pname,d:m}).catch(function(){save.w.top=prev;persist();});
 }
-var VER='4.6.0',EMO=['👍','😂','😮'],race={on:false,dead:false,om:{},rm:0,e:0,et:0,opt:{mode:'last',goal:1000,pu:1,tr:1,eq:0,sp:0}};
+var VER='4.7.2',EMO=['👍','😂','😮'],race={on:false,dead:false,om:{},rm:0,e:0,et:0,opt:{mode:'last',goal:1000,pu:1,tr:1,eq:0,sp:0}};
 var oppMs=[0x66ccff,0x66ff99,0xffaa55].map(function(c){var m=makeBase(c);m.traverse(function(o){if(o.material){o.material=o.material.clone();o.material.transparent=true;o.material.opacity=0.45;}});m.visible=false;scene.add(m);return m;});
 function mkRng(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 function rowPos(k){
@@ -691,13 +691,17 @@ function rcMe(){return {n:save.pname||'Player',d:Math.floor(dist),x:Math.round(p
 function rcClean(){clearInterval(race.iv);clearInterval(race.cd);race.iv=race.cd=null;}
 function resetRace(){rcClean();race.on=false;race.dead=false;race.om={};race.starting=false;race.wPaid=0;$('cd').style.display='none';$('rci').textContent='';$('emo').style.display='none';oppMs.forEach(function(g){g.visible=false;});setCar();}
 function leaveRace(){var c=race.code;resetRace();setPres('menu');race.code=null;if(c){(race.host?api(c,'DELETE'):api(c+'/g/'+pid0(),'DELETE')).catch(function(){});}}
+function raceBadge(){$('rcbtn').innerHTML='<b>🏁</b>Race'+(race.code?' ● '+race.code:'');}
 function showRace(v,msg){
   if(v==='lobby'&&!race.code)v='home';
   var b=$('rcp');b.style.display=v?'block':'none';document.querySelector('#ov .box').style.display=v?'none':'block';
+  raceBadge();
   if(!v)return;$('ov').style.display='flex';
   var h='<h1>Race</h1>';
   if(v==='home')h+='<p>Race up to 4 friends live. One of you creates a room and shares the code.</p><button id="rcnew">Create room</button><p style="margin:14px 0 8px">or join a room</p><div class="row" style="justify-content:center"><input id="rcin" maxlength="4" placeholder="CODE"><button id="rcjoin">Join</button></div><p id="rcmsg">'+(msg||'')+'</p><button id="rcback">Back</button>';
-  if(v==='lobby')h+='<p>Room code</p><p style="font-size:26px;margin:0 0 12px">'+race.code+'</p><p id="rcplayers">Waiting for players...</p><div id="rcopt"></div><p id="rcping" style="font-size:9px;margin:0 0 8px"></p>'+(race.host?'<button id="rcstart" disabled>Start race</button>':'<p>Waiting for the host to start...</p>')+'<br><br><button id="rcleave">Leave</button>';
+  if(v==='lobby'){
+    h+='<p>Room code</p><p style="font-size:26px;margin:0 0 12px">'+race.code+'</p><p id="rcplayers">Waiting for players...</p><div id="rcopt"></div><p id="rcping" style="font-size:9px;margin:0 0 8px"></p>'+(race.host?'<button id="rcstart" disabled>Start race</button>':'<p>Waiting for the host to start...</p>')+'<br><button id="rclmin" style="font-size:9px">Minimize to menu</button><br><br><button id="rcleave">Leave</button>';
+  }
   if(v==='res')h+='<div id="rcres">Waiting...</div><div id="rcrem" style="display:none;margin-top:14px">'+(race.host?'<button id="rcagain">Rematch</button>':'<p>Waiting for the host to start a rematch...</p>')+'</div><br><button id="rcmenu">Menu</button>';
   b.innerHTML=h;if(v==='lobby')renderOpt();
 }
@@ -791,7 +795,7 @@ function raceFinish(){
   race.dead=true;race.me=race.opt.goal;api(race.code+'/g/'+pid0(),'PUT',rcMe()).catch(function(){});
   setTimeout(function(){showRace('res');rcRes();},700);
 }
-$('rcbtn').addEventListener('click',function(){if(!save.pname){showWelcome('Pick a username to race.');return;}showRace('home');});
+$('rcbtn').addEventListener('click',function(){if(!save.pname){showWelcome('Pick a username to race.');return;}showRace(race.code?'lobby':'home');});
 $('emo').addEventListener('click',function(e){var b=e.target.closest('button');if(!b||!race.on||race.dead)return;var n=Date.now();if(n-race.et<1200)return;race.e=+b.dataset.e;race.et=n;flo(EMO[race.e]);});
 $('rcp').addEventListener('click',function(e){
   var b=e.target.closest('button');if(!b)return;
@@ -799,6 +803,7 @@ $('rcp').addEventListener('click',function(e){
   if(id==='rcback'){showRace(false);return;}
   if(id==='rcmenu'){leaveRace();toMenu();return;}
   if(id==='rcleave'){leaveRace();showRace('home');return;}
+  if(id==='rclmin'){showRace(false);return;}
   if(b.dataset.o){var o=race.opt,k=b.dataset.o,GL=[500,1000,2000,3000,5000];
     var WL=[0,10,25,50];
     if(k==='m')o.mode=o.mode==='sprint'?'last':'sprint';else if(k==='g')o.goal=GL[(GL.indexOf(o.goal)+1)%GL.length];else if(k==='p')o.pu=o.pu?0:1;else if(k==='t')o.tr=(o.tr+1)%3;else if(k==='e')o.eq=o.eq?0:1;else if(k==='s')o.sp=o.sp?0:1;else if(k==='w')o.w=WL[(WL.indexOf(o.w||0)+1)%WL.length];
@@ -983,7 +988,10 @@ $('chp').addEventListener('click',function(e){
   if(b.dataset.q!==undefined)sendChat(QP[+b.dataset.q]);
 });
 $('chp').addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.id==='chi'){e.preventDefault();sendChat($('chi').value);}});
-var NEWSV='4.6.0',NEWS=[
+var NEWSV='4.7.2',NEWS=[
+{v:'4.7.2',t:['Fixed a bug where signing in with a Google account that already had cloud progress could silently wipe that progress instead of restoring it. Signing in now correctly offers to restore your existing save.']},
+{v:'4.7.1',t:['Minimizing the race lobby now actually takes you back to the main menu while it keeps waiting in the background — the Race button shows a dot and your room code so you remember it is still open, and tapping it resumes the lobby.']},
+{v:'4.7.0',t:['The race lobby (waiting for players) can now be minimized down to just the room code and player list, so you can see more of the background while you wait.']},
 {v:'4.6.0',t:['Chat upgrade: messages now show as real left/right bubbles with a colored initial for each friend, and consecutive messages from the same person group together instead of repeating the name every time.']},
 {v:'4.5.0',t:['Added a minimize button to the race info panel so you can shrink it down to just your position during a race. Removed the 50-coin friend gift feature.']},
 {v:'4.4.1',t:['Engine heat now shows as its own thermometer on the right side of the screen instead of a ring mixed in with your other power-ups — pulses red when it forces a slowdown.']},
@@ -1163,7 +1171,7 @@ addEventListener('pagehide',function(){
 function idp(cred,tok){
   var body={postBody:'access_token='+cred+'&providerId=google.com',requestUri:location.origin,returnIdpCredential:true,returnSecureToken:true};
   if(tok)body.idToken=tok;
-  return fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key='+AK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json().then(function(j){if(!r.ok)throw (j.error&&j.error.message)||'error';return j;});});
+  return fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key='+AK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json().then(function(j){if(!r.ok)throw (j.error&&j.error.message)||'error';if(j.errorMessage)throw j.errorMessage;return j;});});
 }
 function cloudErr(e){
   e=String(e);
